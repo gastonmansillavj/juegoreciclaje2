@@ -11,6 +11,7 @@ export default class Menu extends Phaser.Scene
     {
 
         this.load.image('btnPlay', 'imagenes/botones/botonPlay.png')
+        this.load.image('fondo', 'imagenes/sprites/menuFondo.png')
         
 
         
@@ -19,6 +20,8 @@ export default class Menu extends Phaser.Scene
 
     create()
     {
+
+          this.add.image(960,540,'fondo').setScale(1.2)
     const  BtnPlay = this.add.image(960,840, 'btnPlay');
              BtnPlay.setInteractive()
              BtnPlay.on('pointerdown', () => this.scene.start('Niveles') );

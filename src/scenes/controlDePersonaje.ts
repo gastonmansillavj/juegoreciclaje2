@@ -7,6 +7,8 @@ import Phaser from 'phaser'
 	private Player: Phaser.Physics.Matter.Sprite
    private animacionDePersonaje : any 
    private cursor? :Phaser.Input.InputPlugin
+   private basuraJuntada?:any
+
    
    // pongo any porque no se como definirlo 
    constructor ( escena:Phaser.Scene,personaje:Phaser.Physics.Matter.Sprite,animacion:any)
@@ -20,28 +22,147 @@ import Phaser from 'phaser'
       
 
       this.Player.setDataEnabled();
+      this.Player.setFriction(0,0)
 
       this.Player.data.set('caminadoX', false);
       this.Player.data.set('caminandoY', false);
       this.Player.data.set('conObjeto', false);
       this.Player.data.set('mouseX', this.Player.x);
       this.Player.data.set('mouseY', this.Player.y);
+      this.Player.data.set('X',0);
+      this.Player.data.set('Y',0);
       this.Player.setVisible(false)
       this.CreaAnimaciones()
+      
 
-      //////// control de colisiones ///////
+            //////////////////// control de colisiones ///////////////////
 
-       ///////// colision////
-         this.Player.setOnCollide((data: MatterJS.ICollisionPair) => {
-        const body = data.bodyB as MatterJS.BodyType
-        const gameObject = body.gameObject
-        const sprite = gameObject as Phaser.Physics.Matter.Sprite
-			  const type = sprite.getData('tipo') ///acacorroboro si tiene un dato con nobre tipo 
+         
+                //////////////////sale de colision//////////////////////
+              this.Player.setOnCollideEnd((data: MatterJS.ICollisionPair) => {
+
+                const bodyA = data.bodyA as MatterJS.BodyType
+                const gameObjectA = bodyA.gameObject
+                const spriteA = gameObjectA as Phaser.Physics.Matter.Sprite
+                const typeA = spriteA.getData('tipo')
+                spriteA.data.set('colisionando', false)
+                console.log("salió de colision con tacho "+ typeA )
+
+
+
+              })
+                ////////// cuando colisiona con algun objeto //////////
+
+                
+              
+                this.Player.setOnCollide((data: MatterJS.ICollisionPair) => {
+
+                  
+                  if (this.Player.getData('conObjeto') == false) 
+                  
+              {
+
+                console.log("colisiono con basura ")
+                  
+                    const bodyB = data.bodyB as MatterJS.BodyType
+                    const gameObjectB = bodyB.gameObject
+
+                    this.basuraJuntada = gameObjectB as Phaser.Physics.Matter.Sprite ///// basura 	
+                 
+                    const typeB = this.basuraJuntada.getData('tipo')// si el personaje colisiona con basura
+                    const basura= this.basuraJuntada.getData('levantado')
+                      
+                 
+                      if(typeB){
+
+                      
+                       console.log("esta ejecutando esta parte")
+                       this.basuraJuntada.setInteractive()
+                       
+                       this.basuraJuntada.on('pointerdown',                      
+                        () => {  
+                           
+                              this.basuraJuntada.setData('levantado', true),
+                              this.Player.data.set('conObjeto',true)  
         
-        console.log("colisiono con basura "+ type )}
-        )  /// esta funcion solo detecta que el personaje colisiono con algo
+                       } );
 
+                      
+                      
+                        console.log("colisiono con basura "+ typeB + " esta levantado: "+ basura)
+                         
+                         }
+                
+              
+              }
+
+
+            if ( this.Player.getData('conObjeto') == true ) {
+
+              const bodyA = data.bodyA as MatterJS.BodyType
+              const gameObjectA = bodyA.gameObject
+              const spriteA = gameObjectA as Phaser.Physics.Matter.Sprite
+              spriteA.setData('colisionando',true)
+              const typeA = spriteA.getData('tipo')
+
+
+              if( typeA ){
+
+                console.log("colisiono con tacho "+ typeA )
+               
+  
+            //  this.basuraJuntada.destroy()
+  
+  
+            spriteA.setInteractive()
+                spriteA.on('pointerdown',
+  
+                () =>{
+
+                  if(this.basuraJuntada.getData('tipo')=='plastico'&& typeA == 'tachoVerde'&& spriteA.getData('colisionando')==true)
+                  {
+                  this.basuraJuntada.destroy(),
+                  spriteA.removeInteractive()
+                  this.Player.data.set('conObjeto', false)
+                  }
+
+                  else if(this.basuraJuntada.getData('tipo')=='metal'&& typeA == 'tachoRojo'&& spriteA.getData('colisionando')==true)
+                  {
+                  this.basuraJuntada.destroy(),
+                  spriteA.removeInteractive()
+                  this.Player.data.set('conObjeto', false)
+                  }
+
+                  else if(this.basuraJuntada.getData('tipo')=='papel'&& typeA == 'tachoAzul'&& spriteA.getData('colisionando')==true)
+                  {
+                  this.basuraJuntada.destroy(),
+                  spriteA.removeInteractive()
+                  this.Player.data.set('conObjeto', false)
+                  }
+                /*  else {
+                    spriteA.removeInteractive()
+                  }*/
+
+
+             }); 
+  
+              }
+             
+            
+
+             }
+
+
+              })  /// esta funcion solo detecta que el personaje colisiono con algo
+              
+
+
+              
+    
+            
     }
+        
+
     public setX(x){
       this.Player.data.set('mouseX', x);
     }
@@ -64,12 +185,7 @@ import Phaser from 'phaser'
       ////////// animaciones ////////// 
 
     private CreaAnimaciones () {
-     /* this.animacionDePersonaje.anims.create({
-			key: 'camina',
-			frames: this.animacionDePersonaje.generateFrameNumbers(' ', { start: 0, end:1 }),   
-			frameRate: 10,
-         repeat: -1
-		})*/
+   
 
       this.animacionDePersonaje.anims.create({
 			key: 'parado',
@@ -129,10 +245,36 @@ import Phaser from 'phaser'
    
    
     }
+
+    
+    public getX(){
+      return this.Player.getData('X')
+    }
+
+    public getY(){
+      return this.Player.getData('Y')
+    }
+
+
+
+
     public moverPersonaje (){
 
-      
+            /////////////////////////////// mueve la basura con el personaje
+
+      if (this.basuraJuntada?.getData('levantado')==true){
+        this.basuraJuntada.x=this.Player.x
+        this.basuraJuntada.y=this.Player.y
+      }
+
+      /////////// seteo los valores de x e y///////////
+
+    
+      this.Player.data.set('X',this.Player.x);
+      this.Player.data.set('Y',this.Player.y);
+
                   ////////////////////// animaciones /////////
+
       this.animacionDePersonaje.x=this.Player.x
       this.animacionDePersonaje.y=this.Player.y
       

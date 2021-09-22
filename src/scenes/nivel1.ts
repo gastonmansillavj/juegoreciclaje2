@@ -20,7 +20,7 @@ export default class Nivel1 extends Phaser.Scene
     private spawnBasuraX?:any
     private spawnBasuraY?:any
     private tiempoSpawnBaura?:number
-    private tachos?:any
+    private tachos?:Phaser.Physics.Matter.Sprite
 
     private Basura?:Phaser.Physics.Matter.Sprite
    
@@ -37,19 +37,27 @@ export default class Nivel1 extends Phaser.Scene
         console.log(this.load.tilemapTiledJSON('tilemap','imagenes/nivel1.json'))
         this.load.image('PlayerHitBox', 'imagenes/sprites/PlayerHitBox.png');
         this.load.spritesheet('basura','imagenes/sprites/basura.png',{  frameWidth : 128 ,  frameHeight : 128  })
+        this.load.image('botella','imagenes/sprites/BotellaAzul.png')
+        this.load.image('papelBollo','imagenes/sprites/papelBollo.png')
+        this.load.image('lataAzul','imagenes/sprites/lataAzul.png')
         this.load.atlas('animPlayer','imagenes/sprites/animacionPersonaje/animacionesPersonajes.png','imagenes/sprites/animacionPersonaje/animacionesPersonajes.json')
         this.load.image('tachoVerde', 'imagenes/sprites/cestoVerde.png');
         this.load.image('tachoAmarillo', 'imagenes/sprites/cestoAmarillo.png');
         this.load.image('tachoRojo', 'imagenes/sprites/cestoRojo.png');
         this.load.image('tachoAzul', 'imagenes/sprites/cestoAzul.png');
+        this.load.audio('musicaMenu', 'musica/musicaFondo.mp3');
+        this.load.image('cinta', 'imagenes/sprites/cinta.png');
+        
         
 
     }
 
-    create()
+   create()
     {
        
 
+        /////// sonidos///
+       let musicaFondo=this.sound.add('musicaMenu').play()
         
         ////////// mapa///////
         
@@ -83,10 +91,23 @@ export default class Nivel1 extends Phaser.Scene
                     
                 {
                     this.spawnBasuraX=x
-                    this.spawnBasuraY=y
+                    this.spawnBasuraY=y+20
                  
                    break                 
                 }
+
+                case 'cinta':
+                    
+                    {
+                        this.matter.add.sprite(x+210,y+70,'cinta', undefined, {
+                            isStatic: true,
+                            isSensor: true
+        
+                        })
+                        .setScale(1.1,0.7)
+                     
+                       break                 
+                    }
 
                 case 'tachoVerde':
                     
@@ -97,6 +118,8 @@ export default class Nivel1 extends Phaser.Scene
 
                 })
                 .setScale(0.3)
+                .setData('tipo','tachoVerde')
+                .setData('colisionando',false)
 
                         break                 
                 }
@@ -110,6 +133,9 @@ export default class Nivel1 extends Phaser.Scene
 
                     })
                     .setScale(0.3)
+                    .setData('tipo','tachoAzul')
+                    .setData('colisionando',false)
+                    this.add.sprite(x,y,'papelBollo').setScale(0.5)
 
                    
 
@@ -126,6 +152,8 @@ export default class Nivel1 extends Phaser.Scene
 
                     })
                     .setScale(0.3)
+                    .setData('tipo','tachoAmarillo')
+                    .setData('colisionando',false)
                             break                 
             
                     }
@@ -135,14 +163,16 @@ export default class Nivel1 extends Phaser.Scene
         
                     {
                   
-                       const tachos = this.matter.add.sprite(x, y, 'tachoRojo', undefined, {
+                       this.tachos = this.matter.add.sprite(x, y,'tachoRojo', undefined, {
                         isStatic: true,
                         isSensor: true
                     })
+                   .setScale(0.3)
+                   .setData('tipo','tachoRojo')
+                   .setData('colisionando',false)
+                   this.add.sprite(x,y,'lataAzul').setScale(0.5)
                    
-                    .setScale(0.3)
-                    tachos.setData('tipo','tachoRojo');
-                    //.setData('tipo','tachoRojo');
+                    
                    
                     break                 
             
@@ -181,7 +211,7 @@ export default class Nivel1 extends Phaser.Scene
 
        //////////////////////// boton de menu //////////////////
 
-        const   Volver = this.add.image(1820,50, 'btnPlay').setScale(0.5);
+        const Volver = this.add.image(1820,50, 'btnPlay').setScale(0.5);
             Volver.setInteractive()
             Volver.on('pointerdown', () => this.scene.start('Opciones') );
 
@@ -200,8 +230,8 @@ export default class Nivel1 extends Phaser.Scene
     update ()
     
     {
-
-
+      
+        
 
       
 
@@ -209,26 +239,43 @@ export default class Nivel1 extends Phaser.Scene
         this.TxtTiempo.text= "tiempo : " + this.TiempoJuego
         
         
-        this.Player?.moverPersonaje () // llama al metodo mover persoanje de la clase player
-
+        this.Player?.moverPersonaje ()
+                                        // llama al metodo mover persoanje de la clase player
+        
         if (this.tiempoSpawnBaura==this.TiempoJuego){
-            const numero=Phaser.Math.Between(1,2)
+            const numero=Phaser.Math.Between(1,3)
             if (numero==1) {
-                const tipoBasura = 'metal'
+                const tipoBasura = 'papel'
+                this.objBasura = new controlDeBasura(this,this.matter.add.sprite(this.spawnBasuraX, this.spawnBasuraY, 'papelBollo', undefined, {
+                    isSensor: true       
+                }),tipoBasura)
+                
+            }
+            else if  (numero==2) {
+
+                const tipoBasura = 'plastico'
                 this.objBasura = new controlDeBasura(this,this.matter.add.sprite(this.spawnBasuraX, this.spawnBasuraY, 'basura', undefined, {
                     isSensor: true       
                 }),tipoBasura)
-            }
-            else {
+             }
 
-        const tipoBasura = 'plastico'
-        this.objBasura = new controlDeBasura(this,this.matter.add.sprite(this.spawnBasuraX, this.spawnBasuraY, 'basura', undefined, {
-            isSensor: true       
-        }),tipoBasura)
-        }
+             else  {
+
+                const tipoBasura = 'metal'
+                this.objBasura = new controlDeBasura(this,this.matter.add.sprite(this.spawnBasuraX, this.spawnBasuraY, 'lataAzul', undefined, {
+                    isSensor: true       
+                }),tipoBasura)
+             }
+
            this.tiempoSpawnBaura=this.tiempoSpawnBaura+5
+           
 
         }
+        
+     
+        
+        
+
         
 
     }
