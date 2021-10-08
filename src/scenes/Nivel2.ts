@@ -5,7 +5,7 @@ import ControlCinta from './ControlCinta'
 import Ui from './Ui'
 import { sharedInstance as events } from './EventListener'
 
-export default class Nivel1 extends Phaser.Scene
+export default class Nivel2 extends Phaser.Scene
 
 {
     private topeCinta?:any
@@ -19,7 +19,7 @@ export default class Nivel1 extends Phaser.Scene
     private TxtTiempo?:Ui
     private objBasura?:any
     private objetosDelMapa?:any 
-    private map?:any
+    private map2?:any
     private spawnBasuraX?:any
     private spawnBasuraY?:any
     private tiempoSpawnBaura:number=0
@@ -41,15 +41,14 @@ export default class Nivel1 extends Phaser.Scene
 
 	constructor()
 	{
-		super('Nivel1')
-        
-        
+		super('Nivel2')
+              
 	}
 
 	preload()
     {
-        this.load.image('tiles', 'imagenes/fondo.png');
-        this.load.tilemapTiledJSON('tilemap','imagenes/nivel1Corregido.json')
+        this.load.image('tiles2', 'imagenes/fondo.png');
+        this.load.tilemapTiledJSON('tilemap2','imagenes/Nivel2.json')
 
         this.load.image('PlayerHitBox', 'imagenes/sprites/PlayerHitBox.png');
         this.load.spritesheet('basura','imagenes/sprites/basura.png',{  frameWidth : 128 ,  frameHeight : 128  })
@@ -85,14 +84,14 @@ export default class Nivel1 extends Phaser.Scene
         
         ////////// mapa///////
         
-        this.map= this.make.tilemap({key:'tilemap'}) /// tiene que estar seleccionada en tiled la opcion empotrar en mapa y ponerle nombre.
-        const tileset=this.map.addTilesetImage('fondo','tiles')/// mapa 1 se llama el nombre del conjunto de patrones en tiled
-        const fondo = this.map.createLayer('background', tileset) //background es el nombre de la capa en tiled
+        this.map2= this.make.tilemap({key:'tilemap2'}) /// tiene que estar seleccionada en tiled la opcion empotrar en mapa y ponerle nombre.
+        const tileset2=this.map2.addTilesetImage('fondo','tiles2')/// mapa 1 se llama el nombre del conjunto de patrones en tiled
+        const fondo = this.map2.createLayer('background', tileset2) //background es el nombre de la capa en tiled
         
         //fondo.setY(-1024)// el fondo quedaba muy abajo por eso hice esto 
 
         ////////////////////////////////////////////////////////
-        this.objetosDelMapa = this.map.getObjectLayer('objetos');
+        this.objetosDelMapa = this.map2.getObjectLayer('objetos');
         this.objetosDelMapa.objects.forEach(objData =>{
             const {x=0,y=0,name} = objData
             switch (name)
@@ -295,15 +294,16 @@ export default class Nivel1 extends Phaser.Scene
             events.on('MetalReciclado',()=> this.sumaPuntos('MetalReciclado'), this)
             events.on('PapelReciclado', ()=> this.sumaPuntos('PapelReciclado'), this)
             events.on('Pierde', this.Pierde, this)
-       
+            
+           
 
     }
 
     update ()
     
     {
-         
-     console.log ('nivel1')
+        console.log ('nivel2')
+       
      
         ////// textos tachos ////// 
         this.txtTachoAmarillo.text = 'Pts: '+ this.ptsTachoAmarillo
@@ -312,12 +312,12 @@ export default class Nivel1 extends Phaser.Scene
         this.txtTachoVerde.text = 'Pts: '+ this.ptsTachoVerde
 
 
-       
+     
 
     ////////////////// despierta escenas//////////
 /*
-        if (this.scene.isSleeping('Nivel1')){
-            this.scene.wake('Nivel1')
+        if (this.scene.isSleeping('Nivel2')){
+            this.scene.wake('Nivel2')
             this.scene.launch('Ui')
             this.tiempoSpawnBaura= this.TiempoJuego + 3
         
@@ -370,35 +370,25 @@ export default class Nivel1 extends Phaser.Scene
         
         if (this.ptsTachoAmarillo>=100||this.ptsTachoRojo>=100||this.ptsTachoVerde>=100||this.ptsTachoAzul>=100) {
 
-            console.log('gana1',this.ptsTachoAmarillo,this.ptsTachoAzul,this.ptsTachoRojo,this.ptsTachoVerde)
+            console.log('gana2',this.ptsTachoAmarillo,this.ptsTachoAzul,this.ptsTachoRojo,this.ptsTachoVerde)
             this.estadoJuego='Gana'
             
             
-
         }
 
         }
 
         else if (this.estadoJuego=='Gana') {
 
-            this.terminaJuego()  
-          
-          
-            this.scene.stop('Ui')
-            this.scene.stop('Nivel1')
+            this.terminaJuego()                          
             this.scene.switch('Gana')
-          
+
         }
 
         else if (this.estadoJuego=='Pierde') {
-          
             
-            this.terminaJuego()
-                              
-           
-            this.scene.stop('Ui')
-            this.scene.stop('Nivel1')
-            this.scene.start('Pierde')
+            this.terminaJuego()                 
+            this.scene.switch('Pierde')
 
         }
 
@@ -465,11 +455,11 @@ export default class Nivel1 extends Phaser.Scene
         this.ptsTachoAzul=0
         this.ptsTachoAmarillo=0
         this.estadoJuego='Jugar'
-        //this.scene.sleep('Ui')  
-       // this.scene.sleep('Nivel1') 
-       
+        this.scene.sleep('Ui')
+        this.scene.sleep('Nivel2')
         events.emit('TerminaJuego')
-        
+      
+
     } 
 
 

@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-
+import { sharedInstance as events } from './EventListener'
  export default class controlDePersonaje // exporto clase control de personaje
  {
       
@@ -37,59 +37,103 @@ import Phaser from 'phaser'
 
             //////////////////// control de colisiones ///////////////////
 
-         
+      
+        
+
+
+
+
+
+
+
                 //////////////////sale de colision//////////////////////
               this.Player.setOnCollideEnd((data: MatterJS.ICollisionPair) => {
-
-                const bodyA = data.bodyA as MatterJS.BodyType
+                
+                
+                const bodyA = data.bodyB as MatterJS.BodyType
                 const gameObjectA = bodyA.gameObject
                 const spriteA = gameObjectA as Phaser.Physics.Matter.Sprite
-                const typeA = spriteA.getData('tipo')
-                spriteA.data.set('colisionando', false)
-                console.log("salió de colision con tacho "+ typeA )
+                const typeA = spriteA?.getData('tipo')
+                if (typeA) {
+                if (typeA =='tachoVerde'||typeA =='tachoAzul'||typeA=='tachoRojo'||typeA=='tachoAmarillo') {
+                 
+                  spriteA.data.set('colisionando', false)
 
+                  console.log("salió de colision con tacho ++ "+ typeA )
 
+                }
+
+                }
+                //// controlo si sale de colision con basura ////
+
+                if (this.Player.getData('conObjeto') == false) 
+                  
+                { 
+
+                const bodyB = data.bodyB as MatterJS.BodyType
+                const gameObjectB = bodyB.gameObject
+                this.basuraJuntada = gameObjectB as Phaser.Physics.Matter.Sprite ///// basura 	
+                const typeB = this.basuraJuntada?.getData('tipo')// si el personaje colisiona con basura
+               
+
+                if (typeB =='papel'||typeB == 'plastico'||typeB == 'metal'){
+
+                   this.basuraJuntada.setData('colisionando',false);
+                   this.basuraJuntada.removeInteractive()
+
+                }
+               // console.log('salió de colision con ' + typeB) 
+              
+
+              
+              //  if (){ 
+              //  }
+
+              }
 
               })
+
+
                 ////////// cuando colisiona con algun objeto //////////
 
-                
-              
-                this.Player.setOnCollide((data: MatterJS.ICollisionPair) => {
 
-                  
+                this.Player.setOnCollide((data: MatterJS.ICollisionPair) => {        
+                 
+                 
                   if (this.Player.getData('conObjeto') == false) 
                   
-              {
+              { 
 
-                console.log("colisiono con basura ")
-                  
                     const bodyB = data.bodyB as MatterJS.BodyType
                     const gameObjectB = bodyB.gameObject
+                    this.basuraJuntada = gameObjectB as Phaser.Physics.Matter.Sprite ///// basura 	                
+                    const typeB = this.basuraJuntada?.getData('tipo')// si el personaje colisiona con basura
+                   console.log('colissiono con basura ' +typeB)
 
-                    this.basuraJuntada = gameObjectB as Phaser.Physics.Matter.Sprite ///// basura 	
-                 
-                    const typeB = this.basuraJuntada.getData('tipo')// si el personaje colisiona con basura
-                    const basura= this.basuraJuntada.getData('levantado')
-                      
-                 
+                   // const basura= this.basuraJuntada.getData('levantado')
+                   this.basuraJuntada.setData('colisionando',true);
+
                       if(typeB){
 
-                      
-                       console.log("esta ejecutando esta parte")
-                       this.basuraJuntada.setInteractive()
-                       
-                       this.basuraJuntada.on('pointerdown',                      
-                        () => {  
-                           
-                              this.basuraJuntada.setData('levantado', true),
-                              this.Player.data.set('conObjeto',true)  
-        
-                       } );
+                          /// aca controlo si esta en colision y si el tipo es de papel , plastico o metal 
+                        if ((this.basuraJuntada.getData('colisionando')==true) && (typeB =='papel'||typeB =='plastico'||typeB =='metal'))
+                         {
 
-                      
-                      
-                        console.log("colisiono con basura "+ typeB + " esta levantado: "+ basura)
+                   /*       this.basuraJuntada.setInteractive()   
+                                         
+                          this.basuraJuntada.on('pointerdown',                      
+                           () => {  
+                           
+                          */ 
+                            this.basuraJuntada.setData('levantado', true)
+                            this.Player.data.set('conObjeto',true)  
+                         
+                    /*     
+                          } );
+*/
+                        }
+                     
+
                          
                          }
                 
@@ -99,7 +143,7 @@ import Phaser from 'phaser'
 
             if ( this.Player.getData('conObjeto') == true ) {
 
-              const bodyA = data.bodyA as MatterJS.BodyType
+              const bodyA = data.bodyB as MatterJS.BodyType
               const gameObjectA = bodyA.gameObject
               const spriteA = gameObjectA as Phaser.Physics.Matter.Sprite
               spriteA.setData('colisionando',true)
@@ -108,40 +152,49 @@ import Phaser from 'phaser'
 
               if( typeA ){
 
-                console.log("colisiono con tacho "+ typeA )
+              console.log("colisiono con tacho "+ typeA )
                
   
             //  this.basuraJuntada.destroy()
   
   
             spriteA.setInteractive()
+
                 spriteA.on('pointerdown',
   
                 () =>{
 
-                  if(this.basuraJuntada.getData('tipo')=='plastico'&& typeA == 'tachoVerde'&& spriteA.getData('colisionando')==true)
+                  
+                  if(this.basuraJuntada?.getData('tipo')=='plastico'&& typeA == 'tachoVerde'&& spriteA.getData('colisionando')==true)
                   {
-                  this.basuraJuntada.destroy(),
-                  spriteA.removeInteractive()
-                  this.Player.data.set('conObjeto', false)
+                    this.controlBasura(spriteA)
+                    events.emit('PlasticoReciclado')
+
+                    console.log ('suma puntos')
+                    
+             
                   }
 
-                  else if(this.basuraJuntada.getData('tipo')=='metal'&& typeA == 'tachoRojo'&& spriteA.getData('colisionando')==true)
+                  else if(this.basuraJuntada?.getData('tipo')=='metal'&& typeA == 'tachoRojo'&& spriteA.getData('colisionando')==true)
                   {
-                  this.basuraJuntada.destroy(),
-                  spriteA.removeInteractive()
-                  this.Player.data.set('conObjeto', false)
+                    this.controlBasura(spriteA)
+                    events.emit('MetalReciclado')
+                    console.log ('suma puntos')
+               
                   }
 
-                  else if(this.basuraJuntada.getData('tipo')=='papel'&& typeA == 'tachoAzul'&& spriteA.getData('colisionando')==true)
+                  else if(this.basuraJuntada?.getData('tipo')=='papel'&& typeA == 'tachoAzul'&& spriteA.getData('colisionando')==true)
                   {
-                  this.basuraJuntada.destroy(),
-                  spriteA.removeInteractive()
-                  this.Player.data.set('conObjeto', false)
+             
+                    this.controlBasura(spriteA)
+                    events.emit('PapelReciclado')
+                    console.log ('suma puntos')
                   }
-                /*  else {
-                    spriteA.removeInteractive()
-                  }*/
+                  else {
+
+                   // spriteA.removeInteractive()
+
+                  }
 
 
              }); 
@@ -155,11 +208,7 @@ import Phaser from 'phaser'
 
               })  /// esta funcion solo detecta que el personaje colisiono con algo
               
-
-
-              
-    
-            
+           
     }
         
 
@@ -179,6 +228,7 @@ import Phaser from 'phaser'
     }
 
     public animacion (){
+
       this.animacionDePersonaje
 
     }
@@ -206,7 +256,7 @@ import Phaser from 'phaser'
 
 
       this.animacionDePersonaje.anims.create({
-			key: 'caminaizquierda',
+			key: 'caminaIzquierda',
 			frames: this.animacionDePersonaje.anims.generateFrameNames('animPlayer', {
 				start: 2,
 				end: 3,
@@ -259,12 +309,25 @@ import Phaser from 'phaser'
 
 
     public moverPersonaje (){
+      
+      /////// controles de variables /////
+     
+
+      //console.log('controla al romperse'+this.Player.getData('conObjeto') )
+
+
+
+
+
 
             /////////////////////////////// mueve la basura con el personaje
 
       if (this.basuraJuntada?.getData('levantado')==true){
         this.basuraJuntada.x=this.Player.x
         this.basuraJuntada.y=this.Player.y
+      }
+      else {
+        this.Player.data.set('conObjeto', false)
       }
 
       /////////// seteo los valores de x e y///////////
@@ -273,51 +336,48 @@ import Phaser from 'phaser'
       this.Player.data.set('X',this.Player.x);
       this.Player.data.set('Y',this.Player.y);
 
-                  ////////////////////// animaciones /////////
+   
+      ////////////////////// animaciones /////////
 
       this.animacionDePersonaje.x=this.Player.x
       this.animacionDePersonaje.y=this.Player.y
       
        if(this.Player.body.velocity.x>0 ){
-         if(this.animacionDePersonaje.anims.currentAnim.key!= 'caminaDerecha'){
-          this.animacionDePersonaje.play('caminaDerecha')
-          this.animacionDePersonaje.flipX = true
-         }
+
+         this.compruebaAnim('caminaDerecha')
+         this.animacionDePersonaje.flipX = true
     
        }
-       else if(this.Player.body.velocity.x<0){
-        if(this.animacionDePersonaje.anims.currentAnim.key!= 'caminaizquierda'){
-          this.animacionDePersonaje.play('caminaizquierda')
-         this.animacionDePersonaje.flipX = false
-        }
-         
-          
+
+       else if(this.Player.body.velocity.x < 0){
+        this.compruebaAnim('caminaIzquierda')
+        this.animacionDePersonaje.flipX = false
+       
+                  
        }
 
        else if(this.Player.body.velocity.y>0){
-        if(this.animacionDePersonaje.anims.currentAnim.key!= 'camina')
-        {
-         this.Player.data.set ('caminandoY', false)
-         this.animacionDePersonaje.play('camina')
-        }
+
+        this.compruebaAnim('camina')
+        this.Player.data.set ('caminandoY', false)
+     
 
          }
       
       else if(this.Player.body.velocity.y<0){
-         if(this.animacionDePersonaje.anims.currentAnim.key!= 'caminaArriba')
-        {
-         this.Player.data.set ('caminandoY', false)
-         this.animacionDePersonaje.play('caminaArriba')
-        }
-   
+
+        this.compruebaAnim('caminaArriba')
+        this.Player.data.set ('caminandoY', false)
          }  
            
       else if (this.Player.body.velocity.y==0 && this.Player.body.velocity.x== 0)
       {
-         this.animacionDePersonaje.play('parado')
+       
+        this.animacionDePersonaje.play('parado')
        
 
          }
+
 
    //////////// actualización  de  movimiento ////////// 
        const velocidad = 15;
@@ -329,52 +389,52 @@ import Phaser from 'phaser'
        
        ///// manejo del mersonaje X ////
 
-         if (this.Player.x<100 ) {
-            this.Player.x=100 
+         if (this.Player.x<0 ) {
             this.Player.setVelocityX(0);
+            this.Player.x=0 
+           
            
 
              }
-         else if (this.Player.x>1200 ) {
-               this.Player.x=1200
+         else if (this.Player.x>1800 ) {
+               this.Player.x=1800
                this.Player.setVelocityX(0);
              
          }
-     
+    
        if( this.Player.x < this.Player.data.get ('mouseX') && this.Player.body.velocity.x<0 ){
            this.Player.setVelocityX(0);
-         
-          
+       
        }
 
        else if(this.Player.x > this.Player.data.get ('mouseX') && this.Player.body.velocity.x>0 ){
            this.Player.setVelocityX(0);
-         
           
        }
       
        if(this.Player.x < this.Player.data.get ('mouseX') && this.Player.data.get('caminandoX')==true){
-           this.Player.setVelocityX(velocidad);
-          this.Player.data.set ('caminandoX', false);
-         
-          
-          
+           
+        this.muevePlayerX(velocidad,false)
+        
        }
        else if(this.Player.x > this.Player.data.get ('mouseX') && this.Player.data.get('caminandoX')==true){
-           this.Player.setVelocityX(-velocidad);
-          this.Player.data.set ('caminandoX', false)
+           
+        this.muevePlayerX(-velocidad,false)
+        
 
        }
 
-       if (this.Player.y<241 ) {
-         this.Player.y=241 
+       if (this.Player.y<0 ) {
+        
          this.Player.setVelocityY(0)
+         this.Player.y=0
        
 
      }
-     else if (this.Player.y>860 ) {
-         this.Player.y=860
+     else if (this.Player.y>1920 ) {
+         
          this.Player.setVelocityY(0);
+         this.Player.y=1920
         
 
      }
@@ -392,21 +452,44 @@ import Phaser from 'phaser'
        }
       
        if(this.Player.y < this.Player.data.get ('mouseY') && this.Player.data.get('caminandoY')==true){
-           this.Player.setVelocityY(velocidad);
-           this.Player.data.set ('caminandoY', false)
+        this.muevePlayerY(velocidad,false)
+       
            
          
        }
        else if(this.Player.y > this.Player.data.get ('mouseY') && this.Player.data.get('caminandoY')==true){
-           this.Player.setVelocityY(-velocidad);
-           this.Player.data.set ('caminandoY', false)
-          
-          
-
-       }
-       
-
+        
+        this.muevePlayerY(-velocidad,false)
+      }
+ 
     }
+    compruebaAnim (animaciones) {
 
+      if(this.animacionDePersonaje.anims.currentAnim.key!= animaciones){
+        this.animacionDePersonaje.play(animaciones) 
+        }
+
+     }
+
+     muevePlayerY(velocidad,Camina){
+      this.Player.setVelocityY(velocidad);
+      this.Player.data.set ('caminandoY', Camina)
+     }
+
+     muevePlayerX(velocidad,Camina){
+      this.Player.setVelocityX(velocidad);
+      this.Player.data.set ('caminandoX', Camina)
+     }
+
+     controlBasura(objeto) {
+     
+      console.log ('control de basura se ejecuto')
+      //this.basuraJuntada.setData('levantado', false)
+      this.Player.data.set('conObjeto', false)   
+      this.basuraJuntada?.destroy()
+      //objeto.removeInteractive()
+     
+     
+     }
 
  }

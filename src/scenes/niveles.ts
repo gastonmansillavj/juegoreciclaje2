@@ -19,9 +19,26 @@ export default class Niveles extends Phaser.Scene
     {       ///nivel 1///
     const   Nivel1 = this.add.image(960,140, 'btnPlay');
             Nivel1.setInteractive()
-            Nivel1.on('pointerdown', () => this.scene.start('Nivel1') );
+            
+            Nivel1.on('pointerdown', () => {
+
+                this.scene.start('Nivel1')
+            /*
+                if (this.scene.isSleeping('Nivel1')){
     
-    const TxtNivel1=this.add.text(810,80, 'Nivel 1 ', {
+                    this.scene.switch('Nivel1')
+                    console.log ('wake')
+                }
+                else {
+                    this.scene.start('Nivel1')
+                   
+                    this.scene.sleep() 
+                    console.log ('start')
+                }
+                */
+            });
+    
+    const TxtNivel1=this.add.text(810,80, 'Nivel 1', {
         font: "100px Arial",
         align: "center",
         stroke: "#de77ae",
@@ -32,7 +49,21 @@ export default class Niveles extends Phaser.Scene
 
     const   Nivel2 = this.add.image(960,340, 'btnPlay');
             Nivel2.setInteractive()
-            Nivel2.on('pointerdown', () => this.scene.start('Nivel1') );
+            Nivel2.on('pointerdown', () => {
+                    
+                
+             if (this.scene.isSleeping('Nivel2')){
+    
+                this.scene.switch('Nivel2')
+                console.log ('wake')
+            }
+            else {
+                this.scene.start('Nivel2')  
+                console.log ('start')
+            }
+            
+        });
+
     
     const TxtNivel2=this.add.text(810,280, 'Nivel 2 ', {
         font: "100px Arial",

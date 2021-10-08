@@ -24,13 +24,16 @@ export default class controlDeBasura extends Phaser.Scene
 
         this.Basura.setFriction(0,0)
         this.Basura.setScale(0.7)
-        this.Basura.setVelocityX(1)
+        this.Basura.setVelocityX(5)
         /////// seteo de información /////////
 
         this.Basura.setDataEnabled()
         this.Basura.data.set('levantado', false);
         this.Basura.data.set('tipo',tipoBasura);
-        this.Basura.data.set('seleccionado',false)
+        this.Basura.setData('colisionando',false);
+        
+
+        this.Basura.data.set('seleccionado',false)// si esta seleccionado 
         
         
       
