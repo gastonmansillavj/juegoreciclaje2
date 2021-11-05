@@ -4,6 +4,9 @@ import Menu from './scenes/menu'
 import Ui from './scenes/Ui'
 import Nivel1 from './scenes/Nivel1'
 import Nivel2 from './scenes/Nivel2'
+import Nivel3 from './scenes/Nivel3'
+import Nivel4 from './scenes/Nivel4'
+import Nivel5 from './scenes/Nivel5'
 import Niveles from './scenes/niveles'
 import Ayuda from './scenes/ayuda'
 import Opciones from './scenes/opciones'
@@ -24,10 +27,13 @@ const config: Phaser.Types.Core.GameConfig = {
         default: 'matter',
         matter: {
             gravity: { y: 0 },
-            debug: true
+            debug: false
         }
     },
-	scene: [Menu,Nivel1,Nivel2,Niveles,Ayuda,Opciones,Creditos,Ui,Gana,Pierde]
+	scene: [Menu,Nivel1,Nivel2,Nivel3,Nivel4,Nivel5,Niveles,Ayuda,Opciones,Creditos,Ui,Pierde,Gana]
 }
 
 export default new Phaser.Game(config)
+
+localStorage.setItem('NivelDesbolqueado', "2");
+localStorage.setItem('musica', "0");

@@ -1,0 +1,478 @@
+import Phaser from 'phaser'
+import controlDePersonaje from './controlDePersonaje' // importo la clase control de personaje
+import controlDeBasura from './controlDeBasura' // importo la clase control de basura
+import ControlCinta from './ControlCinta'
+import Ui from './Ui'
+import Opciones from './opciones'
+import { sharedInstance as events } from './EventListener'
+import ControlDeEscenas from './ControlDeEscenas'
+
+export default class Nivel5 extends Phaser.Scene
+
+{
+   // public controladorEscena:ControlDeEscenas
+    public Nivel?:any
+    private topeCinta?:any
+    private Player? : controlDePersonaje  /// porque este signo ? o este !
+    private hitBox? : any
+    private basura:any
+    private playerAnim:any
+    private tachoVerde:any
+    private TiempoJuego = 0;
+    private temporizador:any
+    private TxtTiempo?:Ui
+    private objBasura?:any
+    private objetosDelMapa?:any 
+    private map?:any
+    private spawnBasuraX?:any
+    private spawnBasuraY?:any
+    private tiempoSpawnBaura:number=0
+    private tachos?:Phaser.Physics.Matter.Sprite
+    private Basura?:Phaser.Physics.Matter.Sprite
+
+    /////// puntos tachos ///// 
+    private txtTachoVerde?: any
+    private txtTachoRojo?: any
+    private txtTachoAzul?: any
+    private txtTachoAmarillo?: any
+    private ptsTachoVerde=0
+    private ptsTachoRojo=0
+    private ptsTachoAzul=0
+    private ptsTachoAmarillo=0
+    private estadoJuego:string='Jugar'
+
+   
+
+	constructor()
+	{
+		super('Nivel5')
+      
+       // this.controladorEscena = new ControlDeEscenas(this);
+	}
+   
+
+
+	preload()
+    {
+        this.load.image('tiles', 'imagenes/fondo.png');
+        this.load.image('lineasPiso', 'imagenes/sprites/lineasPiso.png');
+        this.load.tilemapTiledJSON('tilemap5','imagenes/Nivel5.json')// para cambiar el mapa cambia el nombre a 2 o 3 y asi
+
+        this.load.image('PlayerHitBox', 'imagenes/sprites/PlayerHitBox.png');
+        this.load.spritesheet('basura','imagenes/sprites/basura.png',{  frameWidth : 128 ,  frameHeight : 128  })
+        this.load.image('botella','imagenes/sprites/BotellaAzul.png')
+        this.load.image('banana','imagenes/sprites/banana.png')
+        this.load.image('papelBollo','imagenes/sprites/papelBollo.png')
+        this.load.image('lataAzul','imagenes/sprites/lataAzul.png')
+        this.load.atlas('animPlayer','imagenes/sprites/animacionPersonaje/animacionesPersonajes.png','imagenes/sprites/animacionPersonaje/animacionesPersonajes.json')
+        this.load.image('tachoVerde', 'imagenes/sprites/cestoVerde.png');
+        this.load.image('tachoAmarillo', 'imagenes/sprites/cestoAmarillo.png');
+        this.load.image('tachoRojo', 'imagenes/sprites/cestoRojo.png');
+        this.load.image('tachoAzul', 'imagenes/sprites/cestoAzul.png');
+        this.load.audio('musicaMenu', 'musica/musicaFondo.mp3');
+        this.load.image('cinta', 'imagenes/sprites/cinta.png');
+       
+
+
+        
+      
+        
+
+    }
+
+   create()
+    {   
+        
+        /////// variables al iniciar la escena //////
+        
+        this.estadoJuego='Jugar'
+        this.ptsTachoVerde=0
+        this.ptsTachoRojo=0
+        this.ptsTachoAzul=0
+        this.ptsTachoAmarillo=0
+        this.TiempoJuego = 0
+     
+
+       
+
+        /////// sonidos///
+       //let musicaFondo=this.sound.add('musicaMenu').play()
+        
+        ////////// mapa///////
+        
+        this.map= this.make.tilemap({key:'tilemap5'}) /// tiene que estar seleccionada en tiled la opcion empotrar en mapa y ponerle nombre.     
+        const tileset=this.map.addTilesetImage('fondo','tiles')/// mapa 1 se llama el nombre del conjunto de patrones en tiled
+        const fondo2 = this.map.createLayer('background', tileset) //background es el nombre de la capa en tiled
+        
+        const lineas=this.map.addTilesetImage('lineasPiso','lineasPiso')
+        const lineasPiso = this.map.createLayer('lineas', lineas)
+        
+        // parede //////
+
+      //  const pared=this.map.addTilesetImage('fondo','tiles')
+        //const Paredes = this.map.createLayer('pared', pared)
+       // Paredes.setCollisionByProperty({collide:true})
+       // const lineas=this.map.addTilesetImage('lineasPiso','lineasPiso')
+       // const lineasPiso = this.map.createLayer('lineas', lineas)
+        //fondo.setY(-1024)// el fondo quedaba muy abajo por eso hice esto 
+       // this.matter.world.convertTilemapLayer(Paredes)
+        ////////////////////////////////////////////////////////
+        this.objetosDelMapa = this.map.getObjectLayer('objetos');
+        this.objetosDelMapa.objects.forEach(objData =>{
+            const {x=0,y=0,name} = objData
+            switch (name)
+            {
+                case 'spawnPersonaje':
+                    
+                {  
+                    this.hitBox = this.matter.add.sprite(x,y,'PlayerHitBox',this.playerAnim)
+                    .setFixedRotation() 
+                    this.playerAnim=this.add.sprite(x,y,'animPlayer')
+                    .setScale(1.5)
+              
+                    this.Player = new controlDePersonaje (this,this.hitBox,this.playerAnim)
+               
+                  this.cameras.main.startFollow(this.hitBox)
+                  this.cameras.main.setZoom(1.3)
+                  this.cameras.main.setBounds(0, 0, 1920, 1920)
+
+                    break                 
+     
+                }
+
+                case 'spawnBasura':
+                    
+                {
+                    this.spawnBasuraX=x
+                    this.spawnBasuraY=y+20
+                 
+                   break                 
+                }
+
+                case 'cinta':
+                    
+                    {
+                        this.add.sprite(x+310,y+70,'cinta')
+                        .setScale(1.5,0.7)
+                     
+                       break                 
+                    }
+
+                case 'tachoVerde':
+                    
+                {
+                    const tacho = this.matter.add.sprite(x, y, 'tachoVerde', undefined, {
+                    isStatic: true
+                    //isSensor: true
+
+                })
+                .setScale(0.3)
+                .setData('tipo','tachoVerde')
+                .setData('colisionando',false)
+
+                        break                 
+                }
+
+                case 'tachoAzul':/// en realidad es amarillo
+                
+                    {
+                        const tacho = this.matter.add.sprite(x, y, 'tachoAmarillo', undefined, {
+                        isStatic: true//,
+                       //isSensor: true
+
+                    })
+                    .setScale(0.3)
+                    .setData('tipo','tachoAzul')
+                    .setData('colisionando',false)
+             
+
+                   
+
+                            break                 
+            
+                    }
+
+              
+
+
+                case 'tachoRojo':
+        
+                    {
+                  
+                       this.tachos = this.matter.add.sprite(x, y,'tachoRojo', undefined, {
+                        isStatic: true//,
+                      //  isSensor: true
+                    })
+                   .setScale(0.3)
+                   .setData('tipo','tachoRojo')
+                   .setData('colisionando',false)
+                 
+                   
+                    
+                   
+                    break                 
+            
+                    }
+
+                    case 'finCinta':
+            
+                    {
+                        const finCinta = this.matter.add.sprite(x, y, 'tachoAmarillo', undefined, {
+                        isStatic: true,
+                        isSensor: true
+
+                    })
+                  
+                    .setScale(0.3)
+                    .setData('tipo','finCinta')
+                  
+                    this.topeCinta= new ControlCinta (finCinta)
+                    
+                            break                 
+            
+                    }
+              
+            }
+            
+        
+        })
+           
+     
+        ///////////// player //////////
+    const pointer = this.input.activePointer;
+
+    this.input.on('pointerdown', ()=>{
+
+     //   console.log ( "x="+pointer.x + "y="+pointer.y)
+       this.Player?.setX(pointer.worldX)
+       this.Player?.setY(pointer.worldY)
+       this.Player?.setCaminarX (true)
+       this.Player?.setCaminarY (true)
+
+   
+      });
+      /////// temporizador ////////
+
+      this.temporizador = this.time.addEvent({ delay: 1000, callback: this.cadaSegundo , callbackScope: this, loop: true });
+      
+      this.TxtTiempo= new Ui ()
+
+ 
+        /////////////////////tiempo ///////////////////////////////
+        this.tiempoSpawnBaura = this.TiempoJuego + 3
+
+
+
+        //////////// tachos ////////// 
+/*
+        this.txtTachoVerde=this.add.text(100,900, 'Verde: ', {
+            font: "50px Arial",
+            align: "center",
+            stroke: "#de77ae",
+            strokeThickness: 10
+        });
+
+
+        this.txtTachoAmarillo=this.add.text(400,900, 'Amarillo: ', {
+            font: "50px Arial",
+            align: "center",
+            stroke: "#de77ae",
+            strokeThickness: 10
+        });
+
+        this.txtTachoRojo=this.add.text(650,900, 'Rojo: ', {
+            font: "50px Arial",
+            align: "center",
+            stroke: "#de77ae",
+            strokeThickness: 10
+        });
+
+        this.txtTachoAzul=this.add.text(950,900, 'Azul:', {
+            font: "50px Arial",
+            align: "center",
+            stroke: "#de77ae",
+            strokeThickness: 10
+        });
+*/
+          ///////// scena ///////
+
+            
+          if (!this.scene.launch('Ui')){
+            this.scene.launch('Ui')
+         }
+
+        
+            //////////// events listener ///////// 
+           events.removeAllListeners();
+           events.on('PlasticoReciclado', this.sumaPuntos, this)
+           events.on('MetalReciclado',this.sumaPuntos, this)
+           events.on('PapelReciclado', this.sumaPuntos, this)
+
+           events.on('Pierde', this.Pierde, this)
+        
+      
+    
+    }
+
+    update ()
+    
+    {
+          
+       
+        events.emit('Nivel5')
+        ////// textos tachos ////// 
+     /*   this.txtTachoAmarillo.text = 'Pts: '+ this.ptsTachoAmarillo
+        this.txtTachoRojo.text = 'Pts: '+ this.ptsTachoRojo
+        this.txtTachoAzul.text = 'Pts: '+ this.ptsTachoAzul
+        this.txtTachoVerde.text = 'Pts: '+ this.ptsTachoVerde
+*/
+        
+       
+
+ 
+      
+ ///////////////////////////////////////////////////////////////////////////////
+
+            ////////// texto de tiempo/////////
+      // this.TxtTiempo.text= "tiempo : " + this.TiempoJuego
+        
+        if (this.estadoJuego=='Jugar') {
+
+             this.Player?.moverPersonaje ()
+                                        // llama al metodo mover persoanje de la clase player
+        
+        if (this.tiempoSpawnBaura < this.TiempoJuego){
+            
+            const numero=Phaser.Math.Between(1,3)
+            
+            if (numero==1) {
+               
+                this.creaBasura('papel','banana') // no recuperable
+                          
+            }
+            else if  (numero==2) {
+
+                this.creaBasura('plastico','basura')/// plastico
+
+             }
+
+             else  {
+
+                this.creaBasura( 'metal','papelBollo') /// papel
+
+               
+             }
+
+           this.tiempoSpawnBaura=this.tiempoSpawnBaura+5
+           
+
+        }
+        
+        if (this.ptsTachoAmarillo>=150||this.ptsTachoRojo>=150||this.ptsTachoVerde>=150||this.ptsTachoAzul>=150) {
+
+            console.log('gana1',this.ptsTachoAmarillo,this.ptsTachoAzul,this.ptsTachoRojo,this.ptsTachoVerde)
+            this.estadoJuego='Gana'
+
+        }
+
+        }
+
+        else if (this.estadoJuego=='Gana') {
+
+            this.terminaJuego()  
+           // this.controladorEscena.SiguienteNivel('Nivel2')
+            this.SetLocal('2')
+            this.scene.start('Gana')
+            
+          
+        }
+
+        else if (this.estadoJuego=='Pierde') {
+          
+            
+            this.terminaJuego()
+            this.scene.start('Pierde')
+
+        }
+
+      
+
+    }
+
+    cadaSegundo(){
+
+        this.TiempoJuego = this.TiempoJuego + 1
+       
+        
+
+    }
+
+    creaBasura (tipo,sprite){
+        const tipoBasura = tipo
+        this.objBasura = new controlDeBasura(this,this.matter.add.sprite(this.spawnBasuraX, this.spawnBasuraY, sprite, undefined, {
+            isSensor: true       
+        }),tipo)
+    }
+
+
+    sumaPuntos () {
+       console.log('esta sumando')
+        this.ptsTachoVerde = this.ptsTachoVerde + 50
+       /* console.log(evento)
+        switch (evento) {
+           
+            case 'PlasticoReciclado':
+
+                this.ptsTachoVerde = this.ptsTachoVerde + 50
+       
+                break;
+
+            case 'MetalReciclado':
+
+                this.ptsTachoRojo=this.ptsTachoRojo+50
+        
+                break;
+            case 'PapelReciclado':
+
+                this.ptsTachoAzul =this.ptsTachoAzul+50
+        
+                break;
+
+          
+    
+        }
+
+        //this.ptsTachoAzul =this.ptsTachoAzul+50
+        */
+    }
+
+    Pierde (){
+
+        this.estadoJuego='Pierde'
+
+    }
+
+    terminaJuego (){
+        
+      
+        this.scene.stop('Ui')
+        this.scene.stop('Nivel1')
+       
+        events.emit('TerminaJuego')
+        
+    } 
+
+
+public set _controladorEscena(v : ControlDeEscenas) {
+ //   this.controladorEscena = v;
+}
+
+
+            /// local storage ///
+            SetLocal(escena:string){
+              
+                localStorage.setItem('NivelDesbolqueado',escena);
+            };
+
+
+}

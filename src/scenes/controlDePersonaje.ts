@@ -8,7 +8,7 @@ import { sharedInstance as events } from './EventListener'
    private animacionDePersonaje : any 
    private cursor? :Phaser.Input.InputPlugin
    private basuraJuntada?:any
-
+  
    
    // pongo any porque no se como definirlo 
    constructor ( escena:Phaser.Scene,personaje:Phaser.Physics.Matter.Sprite,animacion:any)
@@ -58,6 +58,7 @@ import { sharedInstance as events } from './EventListener'
                 if (typeA =='tachoVerde'||typeA =='tachoAzul'||typeA=='tachoRojo'||typeA=='tachoAmarillo') {
                  
                   spriteA.data.set('colisionando', false)
+                  spriteA.setScale(0.3)
 
                   console.log("salió de colision con tacho ++ "+ typeA )
 
@@ -96,19 +97,24 @@ import { sharedInstance as events } from './EventListener'
 
                 ////////// cuando colisiona con algun objeto //////////
 
+          
+              
 
+               
+
+             
                 this.Player.setOnCollide((data: MatterJS.ICollisionPair) => {        
                  
                  
                   if (this.Player.getData('conObjeto') == false) 
                   
-              { 
+              {  
 
                     const bodyB = data.bodyB as MatterJS.BodyType
                     const gameObjectB = bodyB.gameObject
                     this.basuraJuntada = gameObjectB as Phaser.Physics.Matter.Sprite ///// basura 	                
                     const typeB = this.basuraJuntada?.getData('tipo')// si el personaje colisiona con basura
-                   console.log('colissiono con basura ' +typeB)
+                   console.log('colissiono con basura ' + typeB)
 
                    // const basura= this.basuraJuntada.getData('levantado')
                    this.basuraJuntada.setData('colisionando',true);
@@ -147,11 +153,13 @@ import { sharedInstance as events } from './EventListener'
               const gameObjectA = bodyA.gameObject
               const spriteA = gameObjectA as Phaser.Physics.Matter.Sprite
               spriteA.setData('colisionando',true)
+
               const typeA = spriteA.getData('tipo')
 
 
-              if( typeA ){
+              if( typeA=='tachoVerde'||typeA=='tachoRojo'||typeA=='tachoAzul' ){
 
+                spriteA.setScale(0.4)
               console.log("colisiono con tacho "+ typeA )
                
   
@@ -168,9 +176,11 @@ import { sharedInstance as events } from './EventListener'
                   if(this.basuraJuntada?.getData('tipo')=='plastico'&& typeA == 'tachoVerde'&& spriteA.getData('colisionando')==true)
                   {
                     this.controlBasura(spriteA)
+                   
                     events.emit('PlasticoReciclado')
 
                     console.log ('suma puntos')
+                    
                     
              
                   }
@@ -180,6 +190,8 @@ import { sharedInstance as events } from './EventListener'
                     this.controlBasura(spriteA)
                     events.emit('MetalReciclado')
                     console.log ('suma puntos')
+                    
+                    
                
                   }
 
@@ -189,9 +201,12 @@ import { sharedInstance as events } from './EventListener'
                     this.controlBasura(spriteA)
                     events.emit('PapelReciclado')
                     console.log ('suma puntos')
+                    
+                  
                   }
                   else {
 
+                    
                    // spriteA.removeInteractive()
 
                   }
@@ -206,7 +221,8 @@ import { sharedInstance as events } from './EventListener'
              }
 
 
-              })  /// esta funcion solo detecta que el personaje colisiono con algo
+              }
+              ) /// esta funcion solo detecta que el personaje colisiono con algo
               
            
     }
@@ -424,10 +440,10 @@ import { sharedInstance as events } from './EventListener'
 
        }
 
-       if (this.Player.y<0 ) {
+       if (this.Player.y<350 ) {
         
          this.Player.setVelocityY(0)
-         this.Player.y=0
+         this.Player.y=350
        
 
      }
