@@ -102,10 +102,14 @@ export default class Opciones extends Phaser.Scene
             /// menu///
     const   MenuInicio = this.add.image(960,940, 'btnPlay').setScale(0.8,0.8);
             MenuInicio.setInteractive()
-            MenuInicio.on('pointerdown', () => this.scene.stop('Ui') )
-            MenuInicio.on('pointerdown', () => this.scene.stop(this.Nivel) )
-            MenuInicio.on('pointerdown', () => this.scene.start('Menu') )
-            MenuInicio.on('pointerdown', () => this.scene.stop() )
+            MenuInicio.on('pointerdown', () => {
+                events.emit('DetieneMusica')
+                this.scene.stop('Ui')
+                this.scene.stop(this.Nivel)
+                this.scene.start('Menu')
+                this.scene.stop()
+            } )
+          
 
             
 

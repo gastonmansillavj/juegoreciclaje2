@@ -1,5 +1,9 @@
 import Phaser from 'phaser'
 
+////api ////
+import 'regenerator-runtime/runtime'
+//////////
+
 import Menu from './scenes/menu'
 import Ui from './scenes/Ui'
 import Nivel1 from './scenes/Nivel1'
@@ -14,6 +18,7 @@ import Creditos from './scenes/creditos'
 import ControlCinta from './scenes/ControlCinta'
 import Gana from './scenes/Gana'
 import Pierde from './scenes/Pierde'
+
 
 
 const config: Phaser.Types.Core.GameConfig = {
@@ -36,4 +41,4 @@ const config: Phaser.Types.Core.GameConfig = {
 export default new Phaser.Game(config)
 
 localStorage.setItem('NivelDesbolqueado', "2");
-localStorage.setItem('musica', "0");
+localStorage.setItem('musica', "1");

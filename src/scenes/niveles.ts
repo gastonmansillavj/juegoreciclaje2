@@ -1,10 +1,33 @@
 import Phaser from 'phaser'
+/////api traductora/////// 
+import { DE_DE, EN_US, ES_AR, PT_BR } from '~/enums/languages'
+import { FETCHED, FETCHING, READY, TODO } from '~/enums/status'
+import { getTranslations, getPhrase } from '~/services/translations'
+//////////
 import ControlDeEscenas from './ControlDeEscenas';
 import { sharedInstance as events } from './EventListener'
 export default class Niveles extends Phaser.Scene
 {
     private Cscena?: ControlDeEscenas
     private Escenas?:any
+    private MusicaMenu?:any
+    private EstadoMusica:any
+
+    /////////////////////////
+    /// textos////// 
+    private TxtNivel1?:Phaser.GameObjects.Text
+    private TxtNivel2?:Phaser.GameObjects.Text
+    private TxtNivel3?:Phaser.GameObjects.Text
+    private TxtNivel4?:Phaser.GameObjects.Text
+      
+    //////api traductora //////
+  
+    private wasChangedLanguage = TODO
+    private tradTxtNivel1 = 'Nivel 1'
+    private tradTxtNivel2 = 'Nivel 2'
+    private tradTxtNivel3 = 'Nivel 3'
+    private tradTxtNivel4 = 'Nivel 4'
+  
 	constructor()
 	{
 		super('Niveles')
@@ -18,7 +41,7 @@ export default class Niveles extends Phaser.Scene
         this.load.image('btnVolver', 'imagenes/botones/botonflecha.png')
         this.load.image('fondoN2', 'imagenes/sprites/fondo_NIVEL2.png')
         this.load.image('fondotran', 'imagenes/sprites/fondo_NIVEL2.png')
-      
+        this.load.audio('musicaMenu', 'musica/menu.mp3');
         this.Cscena = new ControlDeEscenas()
 
           
@@ -27,7 +50,20 @@ export default class Niveles extends Phaser.Scene
 
     create()
     {      
-        
+        ////// musica /////
+       
+        this.MusicaMenu=this.sound.add('musicaMenu')
+               
+        this.EstadoMusica=localStorage.getItem('musica')
+        console.log('musica'+this.EstadoMusica)
+          if( this.EstadoMusica=='1'){
+               this.MusicaMenu.play()
+               this.MusicaMenu.setVolume(0.5)
+              
+               
+             }
+
+
         //// local storage ////
         this.Escenas = this.getLocal()
         console.log(this.Escenas)
@@ -51,6 +87,7 @@ export default class Niveles extends Phaser.Scene
             Nivel1.on('pointerdown', () => {
                 
                 this.scene.start('Nivel1')
+                this.MusicaMenu?.stop()
              //  this.Cscena.compruebaNiveles('Nivel1')
 /*
 
@@ -65,12 +102,13 @@ export default class Niveles extends Phaser.Scene
 
 //////////////////////////////////////////////////////   
     
-    const TxtNivel1=this.add.text(810,80, 'Nivel1', {
+    this.TxtNivel1=this.add.text(810,80, getPhrase(this.tradTxtNivel1), {
         font: "100px Arial",
         align: "center",
         stroke: "#de77ae",
         strokeThickness: 10
     });
+    this.TxtNivel1.x= Nivel1.x-(this.TxtNivel1.width/2)
 
             ///// nivel 2 ///
 
@@ -84,55 +122,82 @@ export default class Niveles extends Phaser.Scene
             Nivel2.on('pointerdown', () => {
 
                 this.scene.start('Nivel2');
-
+                this.MusicaMenu?.stop()
              });
           
 
     
-    const TxtNivel2=this.add.text(810,280, 'Nivel 2 ', {
+    this.TxtNivel2=this.add.text(810,280, getPhrase(this.tradTxtNivel2), {
         font: "100px Arial",
         align: "center",
         stroke: "#de77ae",
         strokeThickness: 10
     });
+    this.TxtNivel2.x= Nivel1.x-(this.TxtNivel2.width/2)
            /// nivel 3 ////
     const   Nivel3 = this.add.image(960,540, 'btnPlay').setScale(0.8,0.8);
             Nivel3.setInteractive()
-            Nivel3.on('pointerdown', () => this.scene.start('Nivel3') );
+            Nivel3.on('pointerdown', () => {
+                this.scene.start('Nivel3')
+                this.MusicaMenu?.stop()
+            } );
 
-    const TxtNivel3=this.add.text(810,480, 'Nivel 3 ', {
+    this.TxtNivel3=this.add.text(810,480, getPhrase(this.tradTxtNivel3), {
         font: "100px Arial",
         align: "center",
         stroke: "#de77ae",
         strokeThickness: 10
     });
+    this.TxtNivel3.x= Nivel1.x-(this.TxtNivel3.width/2)
             /// nivel 4/////
     const   Nivel4 = this.add.image(960,740, 'btnPlay').setScale(0.8,0.8);
             Nivel4.setInteractive()
-            Nivel4.on('pointerdown', () =>  this.scene.start('Nivel4'));
+            Nivel4.on('pointerdown', () =>  {
+                this.scene.start('Nivel4')
+                this.MusicaMenu?.stop()
+        });
     
-    const TxtNivel4=this.add.text(810,680, 'Nivel 4', {
+    this.TxtNivel4=this.add.text(810,680, getPhrase(this.tradTxtNivel4), {
         font: "100px Arial",
         align: "center",
         stroke: "#de77ae",
         strokeThickness: 10
     });
+
+    this.TxtNivel4.x= Nivel1.x-(this.TxtNivel4.width/2)
             /// nivel 5///
     const   Nivel5 = this.add.image(960,940, 'btnPlay').setScale(0.8,0.8);
             Nivel5.setInteractive()
             Nivel5.on('pointerdown', () => this.scene.start('Nivel5') );
 
-    const TxtNivel5=this.add.text(810,880, 'Nivel 5 ', {
-        font: "100px Arial",
-        align: "center",
-        stroke: "#de77ae",
-        strokeThickness: 10
-    });
+  
             /// volver ////
     const   Volver = this.add.image(100,70, 'btnVolver').setScale(0.4);
             Volver.setInteractive()
-            Volver.on('pointerdown', () => this.scene.start('Menu') );
+            Volver.on('pointerdown', () => {
+                
+                this.scene.start('Menu')
+                this.MusicaMenu?.stop()
+            
+            } );
+
+       
         
+    }
+
+    update (){
+        ///// api traductora //// 
+        
+            // console.log(this.updatedTextInScene)
+            if(this.wasChangedLanguage === FETCHED){
+                this.wasChangedLanguage = READY;
+               
+                this.TxtNivel1?.setText(getPhrase(this.tradTxtNivel1));
+                this.TxtNivel2?.setText(getPhrase(this.tradTxtNivel2));
+                this.TxtNivel3?.setText(getPhrase(this.tradTxtNivel3));
+                this.TxtNivel4?.setText(getPhrase(this.tradTxtNivel4));
+               
+            }
     }
 
 
