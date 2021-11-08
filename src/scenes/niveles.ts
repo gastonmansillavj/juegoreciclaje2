@@ -66,7 +66,7 @@ export default class Niveles extends Phaser.Scene
 
         //// local storage ////
         this.Escenas = this.getLocal()
-        console.log(this.Escenas)
+     //   console.log(this.Escenas)
 
         const Fondo2=this.add.image(960,540, 'fondoN2').setScale(1.2);
         this.tweens.add({
