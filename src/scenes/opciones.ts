@@ -1,4 +1,11 @@
 import Phaser from 'phaser'
+
+     /////api traductora/////// 
+     import { DE_DE, EN_US, ES_AR, PT_BR } from '~/enums/languages'
+     import { FETCHED, FETCHING, READY, TODO } from '~/enums/status'
+     import { getTranslations, getPhrase } from '~/services/translations'
+                     //////////
+
 import Nivel1 from './Nivel1';
 import { sharedInstance as events } from './EventListener'
 
@@ -6,6 +13,18 @@ export default class Opciones extends Phaser.Scene
 {
 
     private Nivel?:any
+     //////api traductora //////
+  
+     private wasChangedLanguage = TODO
+     private tradMenu = 'Menu'
+     private tradResume = 'Resume'
+     private tradRestart = 'Restart'
+        ////////////////
+
+     private TxtReiniciar:any
+     private TxtReanudar:any
+     private TxtMenu:any
+    
 	constructor()
 	{
 		super('Opciones')
@@ -48,21 +67,26 @@ export default class Opciones extends Phaser.Scene
 
             /// Reanudar ///
 
-        const   Reanudar = this.add.image(960,140, 'btnPlay').setScale(0.8,0.8);
+        const   Reanudar = this.add.image(960,screen.height*1/3, 'btnPlay').setScale(0.8,0.8);
             Reanudar.setInteractive()
-            Reanudar.on('pointerdown', () => this.scene.resume(this.Nivel) );
-            Reanudar.on('pointerdown', () => this.scene.wake('Ui') );
-            Reanudar.on('pointerdown', () => this.scene.stop() );
+            Reanudar.on('pointerdown', () =>{ 
+                this.scene.resume(this.Nivel)
+                this.scene.wake('Ui') 
+                this.scene.stop()
+            
+            } );
+         
     
-            const TxtReanudar=this.add.text(740,80, 'Reanudar ', {
+            this.TxtReanudar=this.add.text(740,Reanudar.y, getPhrase(this.tradResume), {
                     font: "100px Arial",
                     align: "center",
                     stroke: "#de77ae",
                     strokeThickness: 10
                 });
+            this.TxtReanudar.y=Reanudar.y-this.TxtReanudar.height/2
 
             ///// ayuda///
-
+/*
     const   Ayuda = this.add.image(960,340, 'btnPlay').setScale(0.8,0.8);
             //Ayuda.setInteractive()
             //Ayuda.on('pointerdown', () => this.scene.start('Ayuda') );
@@ -84,23 +108,31 @@ export default class Opciones extends Phaser.Scene
                 stroke: "#de77ae",
                 strokeThickness: 10
             });
-
+*/
             /// Reiniciar/////
-    const   Reiniciar = this.add.image(960,740, 'btnPlay').setScale(0.8,0.8);
+    const   Reiniciar = this.add.image(960,screen.height*2/3, 'btnPlay').setScale(0.8,0.8);
 
                Reiniciar.setInteractive()
-               Reiniciar.on('pointerdown', () => this.scene.stop('Ui') )
-               Reiniciar.on('pointerdown', () => this.scene.start(this.Nivel) )
-               Reiniciar.on('pointerdown', () => this.scene.stop() );
+               Reiniciar.on('pointerdown', () => {
+                   this.scene.stop('Ui')
+                   events.emit('DetieneMusica')
+                   this.scene.start(this.Nivel)
+                   this.scene.stop()
+                
+                } )
+             
 
-               const TxtReiniciar=this.add.text(760,680, 'Reiniciar ', {
+               this.TxtReiniciar=this.add.text(760,Reiniciar.y, getPhrase(this.tradRestart), {
                 font: "100px Arial",
                 align: "center",
                 stroke: "#de77ae",
                 strokeThickness: 10
+              
             });
+
+            this.TxtReiniciar.y=Reiniciar.y-this.TxtReiniciar.height/2
             /// menu///
-    const   MenuInicio = this.add.image(960,940, 'btnPlay').setScale(0.8,0.8);
+    const   MenuInicio = this.add.image(960,screen.height*3/3, 'btnPlay').setScale(0.8,0.8);
             MenuInicio.setInteractive()
             MenuInicio.on('pointerdown', () => {
                 events.emit('DetieneMusica')
@@ -113,16 +145,29 @@ export default class Opciones extends Phaser.Scene
 
             
 
-            const TxtMenu=this.add.text(810,880, 'Menu', {
+           this.TxtMenu=this.add.text(810,MenuInicio.y,  getPhrase(this.tradMenu), {
                 font: "100px Arial",
                 align: "center",
                 stroke: "#de77ae",
                 strokeThickness: 10
             });
+            this.TxtMenu.y=MenuInicio.y-this.TxtMenu.height/2
           
    
 
 
+    }
+    update (){
+
+        if(this.wasChangedLanguage === FETCHED){
+            this.wasChangedLanguage = READY;
+           
+            this.TxtReiniciar?.setText(getPhrase(this.tradRestart));
+            this.TxtMenu?.setText(getPhrase(this.tradMenu));
+            this.TxtReanudar?.setText(getPhrase(this.tradResume));
+            
+           
+        }
     }
 
     compruebaNivel (nivel) {

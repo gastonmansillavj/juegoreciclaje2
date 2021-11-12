@@ -1,4 +1,7 @@
 import Phaser from 'phaser'
+//// events listener////
+import { sharedInstance as events } from './EventListener'
+
 /////api traductora/////// 
 import { DE_DE, EN_US, ES_AR, PT_BR } from '~/enums/languages'
 import { FETCHED, FETCHING, READY, TODO } from '~/enums/status'
@@ -15,15 +18,24 @@ export default class Menu extends Phaser.Scene
     private txtCreditos?:Phaser.GameObjects.Text
     private MusicaMenu?:any
     private EstadoMusica?:any
+    private btnIdioma:any
     
     //////api traductora //////
+    private idioma:any
     private updatedTextInScene
     private wasChangedLanguage = TODO
     private tradTxtJugar = 'Jugar'
     private tradTxtAyuda = 'Ayuda'
     private tradTxtCreditos = 'Creditos'
- 
+ //// pantalll completa    
+    private estadoPantalla:any
+    private txtrotar:any
+    private Rotar:any
+    private Toca:any
+    private ControlFullScreen:any
 
+
+    /////////
 	constructor()
 	{
 		super('Menu')
@@ -38,6 +50,10 @@ export default class Menu extends Phaser.Scene
         this.load.image('btnNoSonido', 'imagenes/botones/boton_no_sonido.png')
         this.load.image('btnIdioma', 'imagenes/botones/botonidioma.png')
         this.load.image('fondo', 'imagenes/sprites/menufond.png')
+        this.load.image('bTnExpandir', 'imagenes/sprites/boton_expandir.png')
+        this.load.image('bTnContraer', 'imagenes/sprites/boton_contraer.png')
+        this.load.image('rotar', 'imagenes/sprites/rotar_pantalla.png') 
+        this.load.image('tocaPantalla', 'imagenes/sprites/TOCAR_PANTALLA.png')
         this.load.image('personajeMenu','imagenes/sprites/personajemenu.png')
         this.load.image('cintaVerde', 'imagenes/sprites/cinadelmenu.png');
         this.load.audio('musicaMenu', 'musica/menu.mp3');
@@ -48,15 +64,20 @@ export default class Menu extends Phaser.Scene
     create()
     {
         
-   
+        this.ControlFullScreen=localStorage.getItem('estadoPantalla');
+        
+        this.Rotar=this.add.image(980,540,'rotar').setDepth(11).setScale(1.1,1.1)//.setVisible(false)
 
+        /////// idioma ///////
+        this.idioma = localStorage.getItem('idioma')
+        console.log(this.idioma+'este es el idioma')
         //////musica /////////
 
         const BtnNoSonido=this.add.image(1820,100,'btnNoSonido').setVisible(false).setDepth(10).setScale(0.15)
         this.MusicaMenu=this.sound.add('musicaMenu')
                
         this.EstadoMusica=localStorage.getItem('musica')
-        
+
         console.log(this.EstadoMusica)
           if( this.EstadoMusica=='1'){
                this.MusicaMenu.play()
@@ -175,36 +196,75 @@ export default class Menu extends Phaser.Scene
                     }
                 });
 
-        const   Idioma = this.add.image(1820,200, 'btnIdioma').setScale(0.15);
-            //Idioma.setInteractive()
-            // Idioma.on('pointerdown', () => this.scene.start('Creditos') );
+        this.btnIdioma = this.add.image(1820,200, 'btnIdioma').setScale(0.15);
+        this.btnIdioma.setInteractive()
+        this.btnIdioma.on('pointerdown', () =>this.seleccionDeIdioma());
                  
             /////// full screen///
-        const   pantalla = this.add.image(100,200, 'btnIdioma').setScale(0.15);
+        const   pantalla = this.add.image(1820,300, 'bTnExpandir').setScale(0.15);
         pantalla.setInteractive()
         pantalla.on('pointerdown', () => this.scale.startFullscreen() );
-
-     if (screen.orientation.angle!=90) {
-         
-        // const txtrotar=this.add.text(300,645, 'rote la pantalla', {
-        //     font: "70px Arial",
+        
+        // this.txtrotar=this.add.text(300,645, 'rote la pantalla', {
+        //     font: "150px Arial",
         //     align: "center",
         //     stroke: "#de77ae",
         //     strokeThickness: 10
         // });
-     }
+   
        
-
-          //////// traduccion///
-          this.getTranslations(EN_US)
+        this.Toca = this.add.image(950,540, 'tocaPantalla').setVisible(true);
+        this.Toca.on('pointerdown', () => {
+            this.Toca.setVisible(false)   
+            this.Toca.removeInteractive()         
+            const temporizador = this.time.addEvent({ delay: 1000, callback: ()=>this.scale.startFullscreen(), callbackScope: this, loop:false });
+            localStorage.setItem('estadoPantalla','2')        
+        });
         
-
+        if (this.ControlFullScreen=='2') {
+            this.Toca.setVisible(false)   
+            this.Toca.removeInteractive() 
+        }
+        ///este evento reinicia la escena cuando cargo
+        events.on('reinicia', this.Reinicia, this)
+           
+     
     }
 
     update (){
+     
+            this.estadoPantalla=navigator.userAgent.match(/Android/i)?.index
+            console.log(this.estadoPantalla)
+            if (this.estadoPantalla==undefined) {
+                //this.txtrotar.setVisible(false)
+                this.Rotar.setVisible(false)
+                this.Toca.setInteractive()
+               
+            }
+        if (this.estadoPantalla==20) {
+            
+         if (screen.orientation.angle==180||screen.orientation.angle==0) {
+
+              // this.txtrotar.setVisible(true)
+               this.Rotar.setVisible(true)
+            
+         
+        }
+         else  if (screen.orientation.angle==-90||screen.orientation.angle==90)
+         {
+                //this.txtrotar.setVisible(false)
+               this.Rotar.setVisible(false)
+               this.Toca.setInteractive()
+             
+         
+         }
+
+        }
+
         ///// api traductora //// 
         
- // console.log(this.updatedTextInScene)
+ //console.log(this.updatedTextInScene)
+ //console.log('idioma'+this.idioma)
  if(this.wasChangedLanguage === FETCHED){
     this.wasChangedLanguage = READY;
     this.txtPlay?.setText(getPhrase(this.tradTxtJugar));
@@ -286,6 +346,51 @@ this.txtCreditos!.x=this.BtnCreditos!.x-(this.txtCreditos!.width/2)
             localStorage.setItem('musica', "1");
         }
        
+    }
+    seleccionDeIdioma(){
+          //////// traduccion///
+          console.log('entro')
+          console.log ('idioma afuera '+this.idioma)
+
+          if (this.idioma == 'espaniol'){   
+            this.getTranslations(EN_US)
+            this.idioma='ingles'
+            localStorage.setItem('idioma','ingles');
+            console.log('se ejecuto ing ')
+           // location.reload() 
+       
+          }
+
+          else if (this.idioma=='ingles'){
+            this.getTranslations(PT_BR)
+            this.idioma='brasilero'
+            localStorage.setItem('idioma','brasilero');   
+          //  location.reload()  
+            console.log('se ejecuto br ')
+          
+          }
+          
+          else if (this.idioma=='brasilero'){
+            this.getTranslations(DE_DE)
+            this.idioma ='aleman'
+            localStorage.setItem('idioma','aleman');    
+           // location.reload() 
+            console.log('se ejecuto alem ')
+      
+          }
+
+          else if (this.idioma =='aleman'){
+            this.getTranslations(ES_AR)
+            this.idioma ='espaniol' 
+            localStorage.setItem('idioma','espaniol');          
+            //location.reload()  
+           console.log('se ejecuto esp ')
+          }
+
+         
+    }
+    Reinicia(){
+        location.reload() 
     }
 
     

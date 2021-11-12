@@ -52,6 +52,14 @@ export default class Nivel3 extends Phaser.Scene
     private particlesRecu : any
     private pointerX:any
     private pointerY:any
+
+    //////// musica ///
+    private EstadoMusica:any
+    private MusicaMenu?:any
+    private camion?:any
+    private reciclada?:any
+    private gana?:any
+    private pierde?:any
     
 
    
@@ -66,7 +74,14 @@ export default class Nivel3 extends Phaser.Scene
 
 
 	preload()
-    {
+    {   
+         //////musica /////////
+         this.load.audio('reciclado', 'musica/reciclado.mp3');
+         this.load.audio('camion', 'musica/camion.mp3');
+         this.load.audio('musicaMenu', 'musica/menu.mp3');
+         this.load.audio('gana', 'musica/gana.mp3');
+         /////////
+
         this.load.image('tiles', 'imagenes/fondo.png');
         this.load.image('lineasPiso', 'imagenes/sprites/lineasPiso.png');
         this.load.tilemapTiledJSON('tilemap3','imagenes/Nivel3.json')// para cambiar el mapa cambia el nombre a 2 o 3 y asi
@@ -165,6 +180,24 @@ export default class Nivel3 extends Phaser.Scene
         this.ptsTachoAmarillo=0
         this.TiempoJuego = 0
         this.GrupoCarritos=[]
+
+         /////////// musica ///////// 
+     this.EstadoMusica=localStorage.getItem('musica')
+     if (this.EstadoMusica=="1") {
+        this.MusicaMenu = this.sound.add('musicaMenu')
+       this.SetMusica(this.MusicaMenu,0.5,true)
+
+        this.camion = this.sound.add('camion')
+        this.SetMusica(this.camion,0.2,true)
+
+        this.reciclada=this.sound.add("reciclado")
+        this.SetMusica2(this.reciclada,0.6,false)
+
+        this.gana=this.sound.add("gana")
+        this.SetMusica2(this.gana,0.6,false)
+
+     }
+     
      
 
        
@@ -427,6 +460,9 @@ export default class Nivel3 extends Phaser.Scene
            events.on('PapelReciclado', this.sumaPuntos, this)
 
            events.on('Pierde', this.Pierde, this)
+
+             /// detiene la musica ////
+             events.on('DetieneMusica', this.detieneMusica, this)
            
            /////// particulas /// 
         this.particlesRecu = this.add.particles('partReciclaje').setDepth(9)
@@ -580,6 +616,12 @@ export default class Nivel3 extends Phaser.Scene
            // this.controladorEscena.SiguienteNivel('Nivel2')
             this.SetLocal('2')
             this.scene.start('Gana')
+
+            this.detieneMusica()
+           
+            if (this.EstadoMusica=="1")
+            { this.gana?.play()
+            }
             
           
         }
@@ -589,6 +631,7 @@ export default class Nivel3 extends Phaser.Scene
             
             this.terminaJuego()
             this.scene.start('Pierde')
+            this.detieneMusica()
 
         }
 
@@ -632,12 +675,21 @@ export default class Nivel3 extends Phaser.Scene
           emitter.setSpeed(100)
          // emitter.setBlendMode(Phaser.BlendModes.ADD)
           emitter.emitParticleAt(this.pointerX,this.pointerY,8)
+
+          emitter.emitParticleAt(this.pointerX,this.pointerY,8)
+          if (this.EstadoMusica=="1") {
+            this.SetMusica(this.reciclada,0.5,false)}
   
       }
     Pierde (){
 
         this.estadoJuego='Pierde'
 
+    }
+    detieneMusica() {
+        this.MusicaMenu?.stop()
+        this.camion?.stop()
+        this.reciclada?.stop()
     }
 
     terminaJuego (){
@@ -662,5 +714,16 @@ public set _controladorEscena(v : ControlDeEscenas) {
                 localStorage.setItem('NivelDesbolqueado',escena);
             };
 
+            SetMusica (SoundMusica,volume:number,repetir:boolean){
+                SoundMusica.play()
+                SoundMusica.setVolume(volume)
+                SoundMusica.setLoop(repetir)
+            }
+        
+            SetMusica2 (SoundMusica,volume:number,repetir:boolean){
+              
+                SoundMusica.setVolume(volume)
+                SoundMusica.setLoop(repetir)
+            }
 
 }

@@ -1,9 +1,11 @@
 import Phaser from 'phaser'
-/////api traductora/////// 
+
+        /////api traductora/////// 
 import { DE_DE, EN_US, ES_AR, PT_BR } from '~/enums/languages'
 import { FETCHED, FETCHING, READY, TODO } from '~/enums/status'
 import { getTranslations, getPhrase } from '~/services/translations'
-//////////
+                //////////
+
 import ControlDeEscenas from './ControlDeEscenas';
 import { sharedInstance as events } from './EventListener'
 export default class Niveles extends Phaser.Scene
@@ -12,7 +14,7 @@ export default class Niveles extends Phaser.Scene
     private Escenas?:any
     private MusicaMenu?:any
     private EstadoMusica:any
-
+                                                                                                                                                                         s//// este juego fue programado por Gaston Mansilla, artista Candela Rodiguez y sonido Sofia Perassi/////
     /////////////////////////
     /// textos////// 
     private TxtNivel1?:Phaser.GameObjects.Text
@@ -55,6 +57,7 @@ export default class Niveles extends Phaser.Scene
         this.MusicaMenu=this.sound.add('musicaMenu')
                
         this.EstadoMusica=localStorage.getItem('musica')
+        
         console.log('musica'+this.EstadoMusica)
           if( this.EstadoMusica=='1'){
                this.MusicaMenu.play()

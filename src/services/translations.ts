@@ -1,4 +1,6 @@
 import { ES_AR } from "~/enums/languages";
+//// emiter///
+import { sharedInstance as events } from '../scenes/EventListener'
 
 const PROJECT_ID = 'ckvk79jsc7242160jsoj8z7jg';
 let translations = null;
@@ -11,11 +13,14 @@ function adaptTranslations(data) {
     });
     const json = JSON.stringify(adaptees);
     console.log(`ADAPTED TRANSLATIONS --- ${json}`);
+    events.emit('reinicia')
+    
     return json;
 }
 
 export async function getTranslations(lang = language) {
-    localStorage.clear();
+    //localStorage.clear();
+    localStorage.removeItem('translations');
     language = lang;
     return await fetch(`https://traduci-la.herokuapp.com/rest/translation?project_id=${PROJECT_ID}&lang=${lang}`)
     .then(response => response.json())

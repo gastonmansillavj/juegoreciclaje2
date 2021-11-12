@@ -1,4 +1,11 @@
 import Phaser from 'phaser'
+
+/////api traductora/////// 
+import { DE_DE, EN_US, ES_AR, PT_BR } from '~/enums/languages'
+import { FETCHED, FETCHING, READY, TODO } from '~/enums/status'
+import { getTranslations, getPhrase } from '~/services/translations'
+/////////////
+
 import { sharedInstance as events } from './EventListener'
 export default class Ui extends Phaser.Scene
 {
@@ -22,6 +29,13 @@ export default class Ui extends Phaser.Scene
 
     /////////// escena //////
     private Escena?:Phaser.Scene
+
+    //////api traductora //////
+    private idioma:any
+    private updatedTextInScene
+    private wasChangedLanguage = TODO
+    private tradMenu = 'Menu'
+    private txtMenu:any
     
     
 
@@ -109,7 +123,7 @@ export default class Ui extends Phaser.Scene
          Volver.on('pointerdown', () => this.scene.pause(this.Nivel) );
          Volver.on('pointerdown', () => this.scene.switch('Opciones') );
 
-         const TxtReiniciar=this.add.text(1680,20, 'Menu ', {
+        this.txtMenu=this.add.text(1680,20, getPhrase(this.tradMenu), {
             font: "50px Arial",
             align: "center",
             stroke: "#de77ae",
@@ -138,11 +152,20 @@ export default class Ui extends Phaser.Scene
       events.on('PlasticoReciclado', this.SumaBarraPuntos, this)
       events.on('MetalReciclado', this.SumaBarraPuntos, this)
       events.on('PapelReciclado', this.SumaBarraPuntos, this)
-      
-      
+           
     }
     
     update () {
+        
+        ///// api traductora //// 
+        
+ //console.log(this.updatedTextInScene)
+ //console.log('idioma'+this.idioma)
+ if(this.wasChangedLanguage === FETCHED){
+    this.wasChangedLanguage = READY;
+    this.txtMenu?.setText(getPhrase(this.tradMenu));
+   
+}
 
 
             //////// evento de juego terminado////////

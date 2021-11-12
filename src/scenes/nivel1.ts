@@ -84,7 +84,7 @@ export default class Nivel1 extends Phaser.Scene
 
 	preload()
     {   
-        //////audios /////////
+        //////musica /////////
         this.load.audio('reciclado', 'musica/reciclado.mp3');
         this.load.audio('camion', 'musica/camion.mp3');
         this.load.audio('musicaMenu', 'musica/menu.mp3');
@@ -217,8 +217,7 @@ export default class Nivel1 extends Phaser.Scene
 
       this.SetLocal('1')
 
-        /////// sonidos///
-       //let musicaFondo=this.sound.add('musicaMenu').play()
+       
         
         ////////// mapa///////
         

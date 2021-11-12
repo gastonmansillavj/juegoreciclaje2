@@ -42,3 +42,5 @@ export default new Phaser.Game(config)
 
 localStorage.setItem('NivelDesbolqueado', "2");
 localStorage.setItem('musica', "1");
+localStorage.getItem('idioma')||'espaniol';
+localStorage.setItem('estadoPantalla','0');
