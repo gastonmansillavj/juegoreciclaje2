@@ -35,7 +35,7 @@ const config: Phaser.Types.Core.GameConfig = {
             debug: false
         }
     },
-    fps: {
+    fps: { 
         target: 30,
         forceSetTimeOut: true
     },
