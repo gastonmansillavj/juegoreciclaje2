@@ -17,8 +17,9 @@ export default class Opciones extends Phaser.Scene
   
      private wasChangedLanguage = TODO
      private tradMenu = 'Menu'
-     private tradResume = 'Resume'
-     private tradRestart = 'Restart'
+     private tradResume = 'Reanudar'
+     private tradRestart = 'Reiniciar'
+     
         ////////////////
 
      private TxtReiniciar:any

@@ -35,7 +35,11 @@ export default class Ui extends Phaser.Scene
     private updatedTextInScene
     private wasChangedLanguage = TODO
     private tradMenu = 'Menu'
+    private tradTiempo='Tiempo'
     private txtMenu:any
+    
+
+    
     
     
 
@@ -135,7 +139,7 @@ export default class Ui extends Phaser.Scene
 
 
     
-       this.txtTiempo = this.add.text(1647,150, 'Tiempo: ', {
+       this.txtTiempo = this.add.text(1647,150, getPhrase(this.tradTiempo+" :"), {
             font: "40px Arial",
             align: "center",
             stroke: "#de77ae",
@@ -164,6 +168,7 @@ export default class Ui extends Phaser.Scene
  if(this.wasChangedLanguage === FETCHED){
     this.wasChangedLanguage = READY;
     this.txtMenu?.setText(getPhrase(this.tradMenu));
+    this.txtTiempo?.setText(getPhrase(this.tradTiempo));
    
 }
 
@@ -173,7 +178,7 @@ export default class Ui extends Phaser.Scene
 
 
         //console.log(this.Tiempo)
-        this.txtTiempo?.setText('Tiempo: '+this.TiempoJuego)
+        this.txtTiempo?.setText(getPhrase(this.tradTiempo)+" :"+this.TiempoJuego)
 
         if(this.alturaBarra==0) {
            this.barraRoja1.setVisible(true)

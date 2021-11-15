@@ -41,7 +41,8 @@ export default class carritos //extends Phaser.Scene
         
         this.AnimCarrito?.anims.create({
             key: 'caminar',
-            frames: this.AnimCarrito?.anims.generateFrameNumbers('animacionCarrito', { start:0, end: 3 }),
+            frames: this.AnimCarrito?.anims.generateFrameNumbers('animacionCarrito',
+            { start:0, end: 3 }),
             frameRate: 3,
             repeat: -1
         });

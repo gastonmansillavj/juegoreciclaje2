@@ -34,6 +34,9 @@ export default class Menu extends Phaser.Scene
     private Toca:any
     private ControlFullScreen:any
 
+    //////////////
+    private logo?: any 
+
 
     /////////
 	constructor()
@@ -48,7 +51,8 @@ export default class Menu extends Phaser.Scene
         this.load.image('titulo', 'imagenes/botones/TITULO.png')
         this.load.image('btnSonido', 'imagenes/botones/botonsonido.png')
         this.load.image('btnNoSonido', 'imagenes/botones/boton_no_sonido.png')
-        this.load.image('btnIdioma', 'imagenes/botones/botonidioma.png')
+       // this.load.image('btnIdioma', 'imagenes/botones/botonidioma.png')
+        this.load.spritesheet("btnIdioma","imagenes/sprites/Banderas.png", { frameWidth: 619, frameHeight:619 })
         this.load.image('fondo', 'imagenes/sprites/menufond.png')
         this.load.image('bTnExpandir', 'imagenes/sprites/boton_expandir.png')
         this.load.image('bTnContraer', 'imagenes/sprites/boton_contraer.png')
@@ -57,20 +61,57 @@ export default class Menu extends Phaser.Scene
         this.load.image('personajeMenu','imagenes/sprites/personajemenu.png')
         this.load.image('cintaVerde', 'imagenes/sprites/cinadelmenu.png');
         this.load.audio('musicaMenu', 'musica/menu.mp3');
+        this.load.audio('boton', 'musica/boton.mp3');
+        /////// logo unraf 
+
+        this.load.spritesheet("logoUnraf","imagenes/sprites/logoUnraf.png", { frameWidth: 640, frameHeight:360 })
+
+
         
 
     }
 
     create()
     {
-        
+        //////////////////// 
+       /* setTimeout(() => {
+            this.logo = this.add.sprite(940, 540, "logoUNRAF").setScale(4);
+          this.logo.play("anim_unraf");
+          }, 6000);
+      this.anims.create({
+            key: "anim_unraf",
+            frames: this.anims.generateFrameNumbers("logoUNRAF", {
+              start: 0,
+              end: 39,
+            }),
+            frameRate: 20,
+          });*/
+        ///////////
+        this.logo = this.add.sprite(940, 540, "logoUnraf").setScale(4);
+        this.logo.anims.create({
+            key: 'logo',
+            frames: this.logo.anims.generateFrameNumbers('logoUnraf', { start:0, end: 39 }),
+            frameRate: 18,
+            repeat: 0
+        });
+       
+
+
+
+        ////////////////////////////////////
         this.ControlFullScreen=localStorage.getItem('estadoPantalla');
         
         this.Rotar=this.add.image(980,540,'rotar').setDepth(11).setScale(1.1,1.1)//.setVisible(false)
 
         /////// idioma ///////
+
+      
+        
         this.idioma = localStorage.getItem('idioma')
         console.log(this.idioma+'este es el idioma')
+       
+
+
         //////musica /////////
 
         const BtnNoSonido=this.add.image(1820,100,'btnNoSonido').setVisible(false).setDepth(10).setScale(0.15)
@@ -80,6 +121,7 @@ export default class Menu extends Phaser.Scene
 
         console.log(this.EstadoMusica)
           if( this.EstadoMusica=='1'){
+
                this.MusicaMenu.play()
                this.MusicaMenu.setVolume(0.5)
                this.MusicaMenu.setLoop(true)
@@ -88,6 +130,8 @@ export default class Menu extends Phaser.Scene
              }
  
         console.log('musica '+this.getLocal('musica'));
+
+        const SoundBoton = this.sound.add('boton')
            //////// fondo ///////
           
         this.add.image(960,540,'fondo').setScale(1.2)
@@ -120,22 +164,46 @@ export default class Menu extends Phaser.Scene
         ////////// boton jugar //////// 
         this.BtnJugar = this.add.image(300,580, 'btnPlay').setScale(0.4,0.4);
         this.BtnJugar.setVisible(false)
-        this.BtnJugar.on('pointerdown', () => this.MusicaMenu?.stop() );
-        this.BtnJugar.on('pointerdown', () => this.scene.start('Niveles') );
+        this.BtnJugar.on('pointerdown', () => {
+            
+            this.MusicaMenu?.stop()
+            if (this.EstadoMusica=='1') {
+                SoundBoton.play()
+            }
+            this.scene.start('Niveles')
+        
+        } );
+      
 
         ////////// boton creditos //////////
         this.BtnCreditos = this.add.image(300,690, 'btnPlay').setScale(0.4,0.4);
         this.BtnCreditos.setVisible(false)
-        this.BtnCreditos.on('pointerdown', () => this.MusicaMenu?.stop() );
-        this.BtnCreditos.on('pointerdown', () => this.scene.start('Creditos') );
+        this.BtnCreditos.on('pointerdown', () => {
+            
+            this.MusicaMenu?.stop()
+            if (this.EstadoMusica=='1') {
+                SoundBoton.play()
+            }
+            this.scene.start('Creditos')
+        
+        } );
+       
 
 
         /////////// boton ayuda //////////
             
         this.BtnAyuda = this.add.image(300,800, 'btnPlay').setScale(0.4,0.4);
         this.BtnAyuda.setVisible(false)
-        this.BtnAyuda.on('pointerdown', () => this.MusicaMenu?.stop());
-        this.BtnAyuda.on('pointerdown', () => this.scene.start('Ayuda') );
+        this.BtnAyuda.on('pointerdown', () => {
+            
+            this.MusicaMenu?.stop()
+            if (this.EstadoMusica=='1') {
+                SoundBoton.play()
+            }
+            this.scene.start('Ayuda')
+        
+        });
+      
       
      
     ///////////////  textos //////////////////
@@ -178,6 +246,9 @@ export default class Menu extends Phaser.Scene
                 Sonido.on('pointerdown', ()=>{
                
                     if (this.EstadoMusica=='1'){
+                        if (this.EstadoMusica=='1') {
+                            SoundBoton.play()
+                        }
                         this.EstadoMusica='0'
                         this.MusicaMenu?.stop();
                         localStorage.setItem('musica','0');
@@ -195,15 +266,28 @@ export default class Menu extends Phaser.Scene
                         BtnNoSonido.setVisible(false)
                     }
                 });
+                //////// idioma ///
+        
+        this.btnIdioma = this.add.sprite(1820,200, 'btnIdioma')
+        .setScale(0.15)
 
-        this.btnIdioma = this.add.image(1820,200, 'btnIdioma').setScale(0.15);
         this.btnIdioma.setInteractive()
-        this.btnIdioma.on('pointerdown', () =>this.seleccionDeIdioma());
+        this.btnIdioma.on('pointerdown', () =>{
+            this.seleccionDeIdioma()
+            if (this.EstadoMusica=='1') {
+                SoundBoton.play()
+            }
+        });
                  
             /////// full screen///
         const   pantalla = this.add.image(1820,300, 'bTnExpandir').setScale(0.15);
         pantalla.setInteractive()
-        pantalla.on('pointerdown', () => this.scale.startFullscreen() );
+        pantalla.on('pointerdown', () => {
+           this.scale.startFullscreen()
+           if (this.EstadoMusica=='1') {
+            SoundBoton.play()
+        }       
+        } );
         
         // this.txtrotar=this.add.text(300,645, 'rote la pantalla', {
         //     font: "150px Arial",
@@ -216,8 +300,17 @@ export default class Menu extends Phaser.Scene
         this.Toca = this.add.image(950,540, 'tocaPantalla').setVisible(true);
         this.Toca.on('pointerdown', () => {
             this.Toca.setVisible(false)   
-            this.Toca.removeInteractive()         
-            const temporizador = this.time.addEvent({ delay: 1000, callback: ()=>this.scale.startFullscreen(), callbackScope: this, loop:false });
+            this.Toca.removeInteractive() 
+            this.logo.setDepth(15)
+            this.logo.play("logo")
+            setTimeout(() => {
+                this.logo.setVisible(false)
+                //this.MusicaMenu.play()
+            }, 6000);        
+            const temporizador = this.time.addEvent({ delay: 1000, callback: ()=>{
+               this.scale.startFullscreen()
+               
+            }, callbackScope: this, loop:false });
             localStorage.setItem('estadoPantalla','2')        
         });
         
@@ -232,7 +325,23 @@ export default class Menu extends Phaser.Scene
     }
 
     update (){
-     
+        
+     ///////// idioma /////////}
+     if(this.idioma == 'espaniol' ){
+        this.btnIdioma.setFrame('3');
+    }
+    else if(this.idioma == 'ingles' ){
+        this.btnIdioma.setFrame('1');
+    }
+    else if(this.idioma == 'aleman' ){
+        this.btnIdioma.setFrame('0');
+    }
+    else if(this.idioma == 'brasilero' ){
+        this.btnIdioma.setFrame('2');
+    }
+
+
+     /////////////////////////////
             this.estadoPantalla=navigator.userAgent.match(/Android/i)?.index
             console.log(this.estadoPantalla)
             if (this.estadoPantalla==undefined) {
@@ -357,6 +466,7 @@ this.txtCreditos!.x=this.BtnCreditos!.x-(this.txtCreditos!.width/2)
             this.idioma='ingles'
             localStorage.setItem('idioma','ingles');
             console.log('se ejecuto ing ')
+            
            // location.reload() 
        
           }
@@ -364,7 +474,8 @@ this.txtCreditos!.x=this.BtnCreditos!.x-(this.txtCreditos!.width/2)
           else if (this.idioma=='ingles'){
             this.getTranslations(PT_BR)
             this.idioma='brasilero'
-            localStorage.setItem('idioma','brasilero');   
+            localStorage.setItem('idioma','brasilero');
+            
           //  location.reload()  
             console.log('se ejecuto br ')
           
@@ -375,6 +486,7 @@ this.txtCreditos!.x=this.BtnCreditos!.x-(this.txtCreditos!.width/2)
             this.idioma ='aleman'
             localStorage.setItem('idioma','aleman');    
            // location.reload() 
+          
             console.log('se ejecuto alem ')
       
           }
@@ -385,12 +497,17 @@ this.txtCreditos!.x=this.BtnCreditos!.x-(this.txtCreditos!.width/2)
             localStorage.setItem('idioma','espaniol');          
             //location.reload()  
            console.log('se ejecuto esp ')
+          
           }
 
          
     }
     Reinicia(){
         location.reload() 
+    }
+
+    boton (){
+     
     }
 
     

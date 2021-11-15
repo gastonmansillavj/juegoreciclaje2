@@ -34,11 +34,32 @@ export default class Creditos extends Phaser.Scene
         Volver.on('pointerdown', () => this.scene.start('Menu') );
 
 
-    const TxtCreditos=this.add.text(400,450, 'integrantes del equipo 7 ', {
-        font: "100px Arial",
-        align: "center",
-        stroke: "#de77ae",
-        strokeThickness: 10
-    });
+        const TxtCreditos=this.add.text(400,450, 'integrantes del equipo 7 ', {
+            font: "100px Arial",
+            align: "center",
+            stroke: "#de77ae",
+            strokeThickness: 10
+        });
+
+        const TxtProgramador=this.add.text(400,450, 'integrantes del equipo 7 ', {
+            font: "100px Arial",
+            align: "center",
+            stroke: "#de77ae",
+            strokeThickness: 10
+        });
+
+        const TxtArtista=this.add.text(400,450, 'integrantes del equipo 7 ', {
+            font: "100px Arial",
+            align: "center",
+            stroke: "#de77ae",
+            strokeThickness: 10
+        });
+
+        const TxtSonido=this.add.text(400,450, 'integrantes del equipo 7 ', {
+            font: "100px Arial",
+            align: "center",
+            stroke: "#de77ae",
+            strokeThickness: 10
+        });
     }
 }

@@ -169,11 +169,11 @@ export default class Niveles extends Phaser.Scene
 
     this.TxtNivel4.x= Nivel1.x-(this.TxtNivel4.width/2)
             /// nivel 5///
-    const   Nivel5 = this.add.image(960,940, 'btnPlay').setScale(0.8,0.8);
+   /* const   Nivel5 = this.add.image(960,940, 'btnPlay').setScale(0.8,0.8);
             Nivel5.setInteractive()
             Nivel5.on('pointerdown', () => this.scene.start('Nivel5') );
 
-  
+  */
             /// volver ////
     const   Volver = this.add.image(100,70, 'btnVolver').setScale(0.4);
             Volver.setInteractive()

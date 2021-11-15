@@ -35,6 +35,11 @@ const config: Phaser.Types.Core.GameConfig = {
             debug: false
         }
     },
+    fps: {
+        target: 30,
+        forceSetTimeOut: true
+    },
+    
 	scene: [Menu,Nivel1,Nivel2,Nivel3,Nivel4,Nivel5,Niveles,Ayuda,Opciones,Creditos,Ui,Pierde,Gana]
 }
 
