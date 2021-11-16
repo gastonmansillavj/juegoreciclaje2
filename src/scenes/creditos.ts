@@ -2,6 +2,8 @@ import Phaser from 'phaser'
 
 export default class Creditos extends Phaser.Scene
 {
+
+    private EstadoMusica?:any
 	constructor()
 	{
 		super('Creditos')
@@ -9,15 +11,23 @@ export default class Creditos extends Phaser.Scene
 
 	preload()
     {
+
         this.load.image('btnVolver', 'imagenes/botones/botonflecha.png')
         this.load.image('fondoN2', 'imagenes/sprites/fondo_NIVEL2.png')
+         ///////// musica /////////
+         this.load.audio('musicaMenu', 'musica/menu.mp3');
+         this.load.audio('boton', 'musica/boton.mp3');
+ 
        
         
 
     }
 
     create()
-    {
+    {   
+        //////////////////
+        this.EstadoMusica=localStorage.getItem('musica')
+        /////////////////
         const Fondo2=this.add.image(960,540, 'fondoN2').setScale(1.2);
         this.tweens.add({
             targets: Fondo2,
@@ -29,33 +39,44 @@ export default class Creditos extends Phaser.Scene
             repeat: -1,            // -1: infinity
             yoyo: true
         });
+        
+        const SoundBoton = this.sound.add('boton')
         const   Volver = this.add.image(100,70, 'btnVolver').setScale(0.4);
         Volver.setInteractive()
-        Volver.on('pointerdown', () => this.scene.start('Menu') );
+        Volver.on('pointerdown', () => {
+            
+            if (this.EstadoMusica=='1') {
+                SoundBoton.play()
+              
+            }
+            this.scene.start('Menu')
+
+        
+        });
 
 
-        const TxtCreditos=this.add.text(400,450, 'integrantes del equipo 7 ', {
-            font: "100px Arial",
+        const TxtCreditos=this.add.text(75,450, 'Programador\n Mansilla Gastón', {
+            font: "65px Arial",
             align: "center",
             stroke: "#de77ae",
             strokeThickness: 10
         });
 
-        const TxtProgramador=this.add.text(400,450, 'integrantes del equipo 7 ', {
-            font: "100px Arial",
+        const TxtProgramador=this.add.text(650,450, 'Artista\n Rodriguez Candela', {
+            font: "65px Arial",
             align: "center",
             stroke: "#de77ae",
             strokeThickness: 10
         });
 
-        const TxtArtista=this.add.text(400,450, 'integrantes del equipo 7 ', {
-            font: "100px Arial",
+        const TxtArtista=this.add.text(1270,450, 'Sonido y traducción\n Sofía Perassi', {
+            font: "65px Arial",
             align: "center",
             stroke: "#de77ae",
             strokeThickness: 10
         });
 
-        const TxtSonido=this.add.text(400,450, 'integrantes del equipo 7 ', {
+        const TxtSonido=this.add.text(screen.width/2+100,150, 'Creditos', {
             font: "100px Arial",
             align: "center",
             stroke: "#de77ae",

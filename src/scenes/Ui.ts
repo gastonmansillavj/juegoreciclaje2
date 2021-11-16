@@ -81,7 +81,7 @@ export default class Ui extends Phaser.Scene
     {
         ////// variables iniciales ///////
 
-        this.TiempoJuego = 0 
+        this.TiempoJuego = 200
         this.alturaBarra = 0
         this.AlturaBarraPuntos = 0
 
@@ -139,7 +139,7 @@ export default class Ui extends Phaser.Scene
 
 
     
-       this.txtTiempo = this.add.text(1647,150, getPhrase(this.tradTiempo+" :"), {
+       this.txtTiempo = this.add.text(1647,150, getPhrase(this.tradTiempo+":"), {
             font: "40px Arial",
             align: "center",
             stroke: "#de77ae",
@@ -160,7 +160,16 @@ export default class Ui extends Phaser.Scene
     }
     
     update () {
-        
+                ////////// tiempo 
+                if (this.TiempoJuego<=0) {
+            
+                    events.emit('Pierde')
+                }
+
+
+
+
+
         ///// api traductora //// 
         
  //console.log(this.updatedTextInScene)
@@ -178,7 +187,7 @@ export default class Ui extends Phaser.Scene
 
 
         //console.log(this.Tiempo)
-        this.txtTiempo?.setText(getPhrase(this.tradTiempo)+" :"+this.TiempoJuego)
+        this.txtTiempo?.setText(getPhrase(this.tradTiempo)+": "+this.TiempoJuego)
 
         if(this.alturaBarra==0) {
            this.barraRoja1.setVisible(true)
@@ -225,7 +234,7 @@ export default class Ui extends Phaser.Scene
  
     cadaSegundo(){
 
-        this.TiempoJuego = this.TiempoJuego + 1
+        this.TiempoJuego = this.TiempoJuego - 1
      
 
     }
@@ -240,6 +249,7 @@ export default class Ui extends Phaser.Scene
     }
   SumaBarraPuntos (){
    this.AlturaBarraPuntos+=30
+
      }
 
     TerminaJuego() {

@@ -69,6 +69,8 @@ export default class Niveles extends Phaser.Scene
 
         //// local storage ////
         this.Escenas = this.getLocal()
+
+       
      //   console.log(this.Escenas)
 
         const Fondo2=this.add.image(960,540, 'fondoN2').setScale(1.2);
@@ -88,9 +90,12 @@ export default class Niveles extends Phaser.Scene
     const   Nivel1 = this.add.image(960,140, 'btnPlay').setScale(0.8,0.8);
             Nivel1.setInteractive()
             Nivel1.on('pointerdown', () => {
-                
-                this.scene.start('Nivel1')
-                this.MusicaMenu?.stop()
+                if (this.Escenas>=1) {
+                    this.MusicaMenu?.stop()
+                    this.scene.start('Nivel1')
+                }
+               
+         
              //  this.Cscena.compruebaNiveles('Nivel1')
 /*
 
@@ -105,7 +110,7 @@ export default class Niveles extends Phaser.Scene
 
 //////////////////////////////////////////////////////   
     
-    this.TxtNivel1=this.add.text(810,80, getPhrase(this.tradTxtNivel1), {
+    this.TxtNivel1=this.add.text(810,90, getPhrase(this.tradTxtNivel1), {
         font: "100px Arial",
         align: "center",
         stroke: "#de77ae",
@@ -115,22 +120,29 @@ export default class Niveles extends Phaser.Scene
 
             ///// nivel 2 ///
 
-    const   Nivel2 = this.add.image(960,340, 'btnPlay').setScale(0.8,0.8);
-           
-    if(this.Escenas>=2){
-        Nivel2.setInteractive()
-       }
-  
-           
-            Nivel2.on('pointerdown', () => {
+    const   Nivel2 = this.add.image(960,390, 'btnPlay').setScale(0.8,0.8); 
+       
+        if (this.Escenas>=2) { 
 
-                this.scene.start('Nivel2');
-                this.MusicaMenu?.stop()
+            Nivel2.setInteractive()
+        }
+        else {
+            Nivel2.setTint(0xC0c0c0)
+        }
+
+        Nivel2.on('pointerdown', () => {
+
+                if (this.Escenas>=2) {
+                    this.MusicaMenu?.stop()
+                    this.scene.start('Nivel2')
+                }
+               
+               
              });
           
 
     
-    this.TxtNivel2=this.add.text(810,280, getPhrase(this.tradTxtNivel2), {
+    this.TxtNivel2=this.add.text(810,340, getPhrase(this.tradTxtNivel2), {
         font: "100px Arial",
         align: "center",
         stroke: "#de77ae",
@@ -138,14 +150,23 @@ export default class Niveles extends Phaser.Scene
     });
     this.TxtNivel2.x= Nivel1.x-(this.TxtNivel2.width/2)
            /// nivel 3 ////
-    const   Nivel3 = this.add.image(960,540, 'btnPlay').setScale(0.8,0.8);
-            Nivel3.setInteractive()
+    const   Nivel3 = this.add.image(960,640, 'btnPlay').setScale(0.8,0.8);
+    if (this.Escenas>=3) { 
+
+        Nivel3.setInteractive()
+    }
+    else {
+        Nivel3.setTint(0xC0c0c0)
+    }
             Nivel3.on('pointerdown', () => {
-                this.scene.start('Nivel3')
-                this.MusicaMenu?.stop()
+               
+                    this.MusicaMenu?.stop()
+                    this.scene.start('Nivel3')
+                
+             
             } );
 
-    this.TxtNivel3=this.add.text(810,480, getPhrase(this.tradTxtNivel3), {
+    this.TxtNivel3=this.add.text(810,590, getPhrase(this.tradTxtNivel3), {
         font: "100px Arial",
         align: "center",
         stroke: "#de77ae",
@@ -153,14 +174,23 @@ export default class Niveles extends Phaser.Scene
     });
     this.TxtNivel3.x= Nivel1.x-(this.TxtNivel3.width/2)
             /// nivel 4/////
-    const   Nivel4 = this.add.image(960,740, 'btnPlay').setScale(0.8,0.8);
-            Nivel4.setInteractive()
+    const   Nivel4 = this.add.image(960,890, 'btnPlay').setScale(0.8,0.8);
+    if (this.Escenas>=4) { 
+
+        Nivel4.setInteractive()
+    }
+    else {
+        Nivel4.setTint(0xC0c0c0)
+    }
             Nivel4.on('pointerdown', () =>  {
-                this.scene.start('Nivel4')
-                this.MusicaMenu?.stop()
+                
+                    this.MusicaMenu?.stop()
+                    this.scene.start('Nivel3')
+                
+               
         });
     
-    this.TxtNivel4=this.add.text(810,680, getPhrase(this.tradTxtNivel4), {
+    this.TxtNivel4=this.add.text(810,840, getPhrase(this.tradTxtNivel4), {
         font: "100px Arial",
         align: "center",
         stroke: "#de77ae",

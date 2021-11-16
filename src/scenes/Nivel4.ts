@@ -609,7 +609,7 @@ this.GrupoCarritos.forEach (carrito => carrito.mueveCarritosX())
 
         }
         
-        if (this.ptsTachoAmarillo>=150||this.ptsTachoRojo>=150||this.ptsTachoVerde>=150||this.ptsTachoAzul>=150) {
+        if (this.ptsTachoAmarillo>=15||this.ptsTachoRojo>=15||this.ptsTachoVerde>=15||this.ptsTachoAzul>=15) {
 
             console.log('gana1',this.ptsTachoAmarillo,this.ptsTachoAzul,this.ptsTachoRojo,this.ptsTachoVerde)
             this.estadoJuego='Gana'
@@ -664,7 +664,7 @@ this.GrupoCarritos.forEach (carrito => carrito.mueveCarritosX())
 
     sumaPuntos () {
         console.log('esta sumando')
-         this.ptsTachoVerde = this.ptsTachoVerde + 50
+         this.ptsTachoVerde = this.ptsTachoVerde + 1
  
  
          ///// pruba particulas /////

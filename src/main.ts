@@ -35,17 +35,18 @@ const config: Phaser.Types.Core.GameConfig = {
             debug: false
         }
     },
-    fps: { 
+   /* fps: { 
         target: 30,
         forceSetTimeOut: true
-    },
+    },*/
     
 	scene: [Menu,Nivel1,Nivel2,Nivel3,Nivel4,Nivel5,Niveles,Ayuda,Opciones,Creditos,Ui,Pierde,Gana]
 }
 
 export default new Phaser.Game(config)
 
-localStorage.setItem('NivelDesbolqueado', "2");
+localStorage.setItem('NivelDesbolqueado', "1");
 localStorage.setItem('musica', "1");
 localStorage.getItem('idioma')||'espaniol';
 localStorage.setItem('estadoPantalla','0');
+

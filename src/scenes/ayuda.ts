@@ -22,6 +22,8 @@ export default class Ayuda extends Phaser.Scene
      private txtInstruc2:any
      private txtInstruc3:any
 
+     private idioma:any
+
 	constructor()
 	{
 		super('Ayuda')
@@ -33,6 +35,9 @@ export default class Ayuda extends Phaser.Scene
         this.load.image('fondoN2', 'imagenes/sprites/fondo_NIVEL2.png')
         this.load.image('btnVolver', 'imagenes/botones/botonflecha.png')
         this.load.image('ayuda', 'imagenes/ayuda.png')
+        this.load.image('ayudaA', 'imagenes/ayuda_aleman.png')
+        this.load.image('ayudaB', 'imagenes/ayuda_portugues.png')
+        this.load.image('ayudaI', 'imagenes/ayuda_ingles.png')
         ///////// musica /////////
         this.load.audio('musicaMenu', 'musica/menu.mp3');
         this.load.audio('boton', 'musica/boton.mp3');
@@ -44,7 +49,10 @@ export default class Ayuda extends Phaser.Scene
     {   
 
         const Fondo2=this.add.image(960,540, 'fondoN2').setScale(1.2);
-       const fondoAyuda= this.add.image(960,540,'ayuda').setScale(0.9)
+       const fondoAyuda= this.add.image(960,540,'ayuda').setScale(0.9).setVisible(false)
+       const fondoAyudaA= this.add.image(960,540,'ayudaA').setScale(0.9).setVisible(false)
+       const fondoAyudaB= this.add.image(960,540,'ayudaB').setScale(0.9).setVisible(false)
+       const fondoAyudaI= this.add.image(960,540,'ayudaI').setScale(0.9).setVisible(false)
  
         this.tweens.add({
             targets: Fondo2,
@@ -63,7 +71,7 @@ export default class Ayuda extends Phaser.Scene
         console.log(this.EstadoMusica)
           if( this.EstadoMusica=='1'){
 
-               this.MusicaMenu.play()
+              // this.MusicaMenu.play()
                this.MusicaMenu.setVolume(0.5)
                this.MusicaMenu.setLoop(true)
               
@@ -81,36 +89,52 @@ export default class Ayuda extends Phaser.Scene
             }
             this.scene.start('Menu')} );
     
+            this.idioma = localStorage.getItem('idioma')
+
+        if(this.idioma == 'espaniol') {
+            fondoAyuda.setVisible(true)
+        }
+        else if(this.idioma == 'ingles') {
+            fondoAyudaI.setVisible(true)
+        }
+        else if(this.idioma == 'aleman') {
+            fondoAyudaA.setVisible(true)
+        }
+        else if(this.idioma == 'brasilero') {
+            fondoAyudaB.setVisible(true)
+        }
+
+        
+        // this.txtInstruc1=this.add.text(500,450, getPhrase(this.tradintruc1), {
+        //     font: "100px Arial",
+        //     align: "center",
+        //     stroke: "#de77ae",
+        //     strokeThickness: 10
+        // });
+        // this.txtInstruc2=this.add.text(1000,450,getPhrase(this.tradintruc2), {
+        //     font: "100px Arial",
+        //     align: "center",
+        //     stroke: "#de77ae",
+        //     strokeThickness: 10
+        // });
+        // this.txtInstruc3=this.add.text(1500,450,getPhrase(this.tradintruc3), {
+        //     font: "100px Arial",
+        //     align: "center",
+        //     stroke: "#de77ae",
+        //     strokeThickness: 10
+        // });
 
 
-        this.txtInstruc1=this.add.text(500,450, getPhrase(this.tradintruc1), {
-            font: "100px Arial",
-            align: "center",
-            stroke: "#de77ae",
-            strokeThickness: 10
-        });
-        this.txtInstruc2=this.add.text(1000,450,getPhrase(this.tradintruc2), {
-            font: "100px Arial",
-            align: "center",
-            stroke: "#de77ae",
-            strokeThickness: 10
-        });
-        this.txtInstruc3=this.add.text(1500,450,getPhrase(this.tradintruc3), {
-            font: "100px Arial",
-            align: "center",
-            stroke: "#de77ae",
-            strokeThickness: 10
-        });
 
     }
     update (){
 
-        if(this.wasChangedLanguage === FETCHED){
-            this.wasChangedLanguage = READY;
-            this.txtInstruc1.setText(getPhrase(this.tradintruc1));
-            this.txtInstruc2.setText(getPhrase(this.tradintruc2));
-            this.txtInstruc3.setText(getPhrase(this.tradintruc3));
-        }
+        // if(this.wasChangedLanguage === FETCHED){
+        //     this.wasChangedLanguage = READY;
+        //     this.txtInstruc1.setText(getPhrase(this.tradintruc1));
+        //     this.txtInstruc2.setText(getPhrase(this.tradintruc2));
+        //     this.txtInstruc3.setText(getPhrase(this.tradintruc3));
+        // }
     }
 
 

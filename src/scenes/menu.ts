@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 //// events listener////
-import { sharedInstance as events } from './EventListener'
+import { sharedInstance as events, sharedInstance } from './EventListener'
 
 /////api traductora/////// 
 import { DE_DE, EN_US, ES_AR, PT_BR } from '~/enums/languages'
@@ -128,6 +128,11 @@ export default class Menu extends Phaser.Scene
                BtnNoSonido.setVisible(false)
                
              }
+            else { 
+
+                BtnNoSonido.setVisible(true)
+
+            }
  
         console.log('musica '+this.getLocal('musica'));
 
