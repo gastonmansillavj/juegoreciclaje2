@@ -68,7 +68,7 @@ export default class Opciones extends Phaser.Scene
 
             /// Reanudar ///
 
-        const   Reanudar = this.add.image(960,screen.height*1/3, 'btnPlay').setScale(0.8,0.8);
+        const   Reanudar = this.add.image(960,200, 'btnPlay').setScale(0.8,0.8);
             Reanudar.setInteractive()
             Reanudar.on('pointerdown', () =>{ 
                 this.scene.resume(this.Nivel)
@@ -85,7 +85,7 @@ export default class Opciones extends Phaser.Scene
                     strokeThickness: 10
                 });
             this.TxtReanudar.y=Reanudar.y-this.TxtReanudar.height/2
-
+            this.TxtReanudar.x=Reanudar.x-this.TxtReanudar.width/2
             ///// ayuda///
 /*
     const   Ayuda = this.add.image(960,340, 'btnPlay').setScale(0.8,0.8);
@@ -111,7 +111,7 @@ export default class Opciones extends Phaser.Scene
             });
 */
             /// Reiniciar/////
-    const   Reiniciar = this.add.image(960,screen.height*2/3, 'btnPlay').setScale(0.8,0.8);
+    const   Reiniciar = this.add.image(960,500, 'btnPlay').setScale(0.8,0.8);
 
                Reiniciar.setInteractive()
                Reiniciar.on('pointerdown', () => {
@@ -132,8 +132,9 @@ export default class Opciones extends Phaser.Scene
             });
 
             this.TxtReiniciar.y=Reiniciar.y-this.TxtReiniciar.height/2
+            this.TxtReiniciar.x=Reiniciar.x-this.TxtReiniciar.width/2
             /// menu///
-    const   MenuInicio = this.add.image(960,screen.height*3/3, 'btnPlay').setScale(0.8,0.8);
+    const   MenuInicio = this.add.image(960,800, 'btnPlay').setScale(0.8,0.8);
             MenuInicio.setInteractive()
             MenuInicio.on('pointerdown', () => {
                 events.emit('DetieneMusica')
@@ -153,6 +154,7 @@ export default class Opciones extends Phaser.Scene
                 strokeThickness: 10
             });
             this.TxtMenu.y=MenuInicio.y-this.TxtMenu.height/2
+            this.TxtMenu.x=MenuInicio.x-this.TxtMenu.width/2
           
    
 

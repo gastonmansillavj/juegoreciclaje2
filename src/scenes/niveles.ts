@@ -189,7 +189,7 @@ export default class Niveles extends Phaser.Scene
             Nivel4.on('pointerdown', () =>  {
                 
                     this.MusicaMenu?.stop()
-                    this.scene.start('Nivel3')
+                    this.scene.start('Nivel4')
                 
                
         });
