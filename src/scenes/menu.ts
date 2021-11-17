@@ -110,7 +110,8 @@ export default class Menu extends Phaser.Scene
         this.idioma = localStorage.getItem('idioma')
         if (this.idioma==null){
             localStorage.setItem('idioma','espaniol');
-          //  this.getTranslations(ES_AR)
+            this.idioma = localStorage.getItem('idioma')
+            //this.getTranslations(ES_AR)
         }
         console.log(this.idioma+'este es el idioma')
        
