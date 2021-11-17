@@ -275,6 +275,7 @@ export default class Menu extends Phaser.Scene
         
         this.btnIdioma = this.add.sprite(1820,200, 'btnIdioma')
         .setScale(0.15)
+        this.btnIdioma.setFrame('3');
 
         this.btnIdioma.setInteractive()
         this.btnIdioma.on('pointerdown', () =>{
@@ -330,7 +331,7 @@ export default class Menu extends Phaser.Scene
     }
 
     update (){
-        
+        console.log(this.idioma+"este es el idioma")
      ///////// idioma /////////}
      if(this.idioma == 'espaniol' ){
         this.btnIdioma.setFrame('3');
