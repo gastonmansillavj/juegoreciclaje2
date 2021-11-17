@@ -52,6 +52,8 @@ export default class Niveles extends Phaser.Scene
 
     create()
     {      
+
+       
         ////// musica /////
        
         this.MusicaMenu=this.sound.add('musicaMenu')
@@ -69,6 +71,7 @@ export default class Niveles extends Phaser.Scene
 
         //// local storage ////
         this.Escenas = this.getLocal()
+        console.log("estas son las escenas "+this.Escenas)
 
        
      //   console.log(this.Escenas)
@@ -151,6 +154,7 @@ export default class Niveles extends Phaser.Scene
     this.TxtNivel2.x= Nivel1.x-(this.TxtNivel2.width/2)
            /// nivel 3 ////
     const   Nivel3 = this.add.image(960,640, 'btnPlay').setScale(0.8,0.8);
+    
     if (this.Escenas>=3) { 
 
         Nivel3.setInteractive()

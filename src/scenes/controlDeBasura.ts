@@ -24,7 +24,7 @@ export default class controlDeBasura extends Phaser.Scene
 
         this.Basura.setFriction(0,0)
         this.Basura.setScale(0.7)
-        this.Basura.setVelocityX(5)
+        this.Basura.setVelocityX(1.8)
         this.Basura.setDepth(8)
         /////// seteo de información /////////
 

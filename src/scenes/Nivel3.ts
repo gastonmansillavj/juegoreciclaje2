@@ -615,7 +615,7 @@ export default class Nivel3 extends Phaser.Scene
             localStorage.setItem('NivelDesbolqueado', "4");
             this.terminaJuego()  
            // this.controladorEscena.SiguienteNivel('Nivel2')
-            this.SetLocal('2')
+           
             this.scene.start('Gana')
 
             this.detieneMusica()

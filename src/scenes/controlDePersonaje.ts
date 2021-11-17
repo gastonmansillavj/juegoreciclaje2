@@ -2,7 +2,9 @@ import Phaser from 'phaser'
 import { sharedInstance as events } from './EventListener'
  export default class controlDePersonaje // exporto clase control de personaje
  {
-      
+    ////// velocidad /// 
+    private velocidad:any
+    ////
    private scene: Phaser.Scene
 	private Player: Phaser.Physics.Matter.Sprite
    private animacionDePersonaje : any 
@@ -13,6 +15,8 @@ import { sharedInstance as events } from './EventListener'
    // pongo any porque no se como definirlo 
    constructor ( escena:Phaser.Scene,personaje:Phaser.Physics.Matter.Sprite,animacion:any)
     {
+     
+     this.velocidad=15;
       //this.cursor=cursor
       this.scene = escena
 		this.Player =personaje
@@ -327,7 +331,12 @@ import { sharedInstance as events } from './EventListener'
     public moverPersonaje (){
       
       /////// controles de variables /////
-     
+     if (this.Player.body.velocity.x>15){
+      this.Player.setVelocityX(15)
+     }
+     if (this.Player.body.velocity.y>15){
+      this.Player.setVelocityY(15)
+     }
 
       //console.log('controla al romperse'+this.Player.getData('conObjeto') )
 
@@ -396,7 +405,7 @@ import { sharedInstance as events } from './EventListener'
 
 
    //////////// actualización  de  movimiento ////////// 
-       const velocidad = 15;
+     //  const velocidad = 15;
 
        if (!this.Player){
 
@@ -430,12 +439,12 @@ import { sharedInstance as events } from './EventListener'
       
        if(this.Player.x < this.Player.data.get ('mouseX') && this.Player.data.get('caminandoX')==true){
            
-        this.muevePlayerX(velocidad,false)
+        this.muevePlayerX(this.velocidad,false)
         
        }
        else if(this.Player.x > this.Player.data.get ('mouseX') && this.Player.data.get('caminandoX')==true){
            
-        this.muevePlayerX(-velocidad,false)
+        this.muevePlayerX(-this.velocidad,false)
         
 
        }
@@ -468,14 +477,14 @@ import { sharedInstance as events } from './EventListener'
        }
       
        if(this.Player.y < this.Player.data.get ('mouseY') && this.Player.data.get('caminandoY')==true){
-        this.muevePlayerY(velocidad,false)
+        this.muevePlayerY(this.velocidad,false)
        
            
          
        }
        else if(this.Player.y > this.Player.data.get ('mouseY') && this.Player.data.get('caminandoY')==true){
         
-        this.muevePlayerY(-velocidad,false)
+        this.muevePlayerY(-this.velocidad,false)
       }
  
     }

@@ -600,7 +600,7 @@ export default class Nivel2 extends Phaser.Scene
             localStorage.setItem('NivelDesbolqueado', "3");
             this.terminaJuego()  
            // this.controladorEscena.SiguienteNivel('Nivel2')
-            this.SetLocal('2')
+            
             this.scene.start('Gana')
 
             this.detieneMusica()
@@ -693,11 +693,8 @@ public set _controladorEscena(v : ControlDeEscenas) {
 }
 
 
-            /// local storage ///
-            SetLocal(escena:string){
-              
-                localStorage.setItem('NivelDesbolqueado',escena);
-            };
+            
+    
 
             SetMusica (SoundMusica,volume:number,repetir:boolean){
                 SoundMusica.play()
